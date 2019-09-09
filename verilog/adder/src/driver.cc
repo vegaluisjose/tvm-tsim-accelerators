@@ -65,7 +65,7 @@ class Device {
   }
 
   uint32_t Run(DLTensor* a, DLTensor* b, DLTensor* c) {
-    // uint32_t cycles;
+    uint32_t cycles;
     uint32_t len = a->shape[0];
     size_t size = (a->dtype.bits >> 3) * len;
     this->check_len(a, b, c);
@@ -76,12 +76,12 @@ class Device {
     this->MemCopyFromHost(b_, b->data, size);
     this->Init();
     this->Launch(len);
-    // cycles = this->WaitForCompletion();
+    cycles = this->WaitForCompletion();
     this->MemCopyToHost(c->data, c_, size);
     this->MemFree(a_);
     this->MemFree(b_);
     this->MemFree(c_);
-    return 6;
+    return cycles;
   }
 
  private:
