@@ -19,13 +19,15 @@
 
 /** Compute
   *
-  * Add-by-one procedure:
+  * Adder procedure:
   *
   * 1. Wait for launch to be asserted
-  * 2. Issue a read request for 8-byte value at inp_baddr address
+  * 2. Issue a read request for a operand
   * 3. Wait for the value
-  * 4. Issue a write request for 8-byte value at out_baddr address
-  * 5. Increment read-address and write-address for next value
+  * 4. Issue a read request for b operand
+  * 5. Wait for the value
+  * 4. Issue a write request for c
+  * 5. Increment read-address and write-address for next values
   * 6. Check if counter (cnt) is equal to length to assert finish,
   *    otherwise go to step 2.
   */
@@ -56,10 +58,10 @@ module Compute #
   output                        event_counter_valid,
   output   [HOST_DATA_BITS-1:0] event_counter_value,
 
-  input    [HOST_DATA_BITS-1:0] constant,
   input    [HOST_DATA_BITS-1:0] length,
-  input     [MEM_ADDR_BITS-1:0] inp_baddr,
-  input     [MEM_ADDR_BITS-1:0] out_baddr
+  input    [HOST_DATA_BITS-1:0] a_addr,
+  input    [HOST_DATA_BITS-1:0] b_addr,
+  input    [HOST_DATA_BITS-1:0] c_addr
 );
 
   typedef enum logic [2:0] {IDLE,
@@ -70,10 +72,13 @@ module Compute #
 
   state_t state_n, state_r;
 
-  logic [31:0] cnt;
-  logic [MEM_DATA_BITS-1:0] data;
-  logic [MEM_ADDR_BITS-1:0] raddr;
-  logic [MEM_ADDR_BITS-1:0] waddr;
+  logic               [31:0] cnt;
+  logic                      rd_done;
+  logic  [MEM_DATA_BITS-1:0] a_reg;
+  logic  [MEM_DATA_BITS-1:0] res_reg;
+  logic [HOST_DATA_BITS-1:0] raddr_a;
+  logic [HOST_DATA_BITS-1:0] raddr_b;
+  logic [HOST_DATA_BITS-1:0] waddr_c;
 
   always_ff @(posedge clock) begin
     if (reset) begin
@@ -98,7 +103,11 @@ module Compute #
 
       READ_DATA: begin
         if (mem_rd_valid) begin
-          state_n = WRITE_REQ;
+          if (rd_done) begin
+            state_n = WRITE_REQ;
+          end else begin
+            state_n = READ_REQ;
+          end
         end else begin
           state_n = READ_DATA;
         end
@@ -121,6 +130,14 @@ module Compute #
     endcase
   end
 
+  always_ff @(posedge clock) begin
+    if (reset | state_r == IDLE | state_r == WRITE_DATA) begin
+      rd_done <= 1'b0;
+    end else if (state_r == READ_DATA & mem_rd_valid) begin
+      rd_done <= 1'b1;
+    end
+  end
+
   logic last;
   assign last = (state_r == WRITE_DATA) & (cnt == (length - 1'b1));
 
@@ -130,7 +147,7 @@ module Compute #
     if (reset | state_r == IDLE) begin
       cycle_counter <= '0;
     end else begin
-      cycle_counter <= cycle_counter + 1'b1;
+      cycle_counter <= cycle_counter + 'd1;
     end
   end
 
@@ -140,11 +157,13 @@ module Compute #
   // calculate next address
   always_ff @(posedge clock) begin
     if (reset | state_r == IDLE) begin
-      raddr <= inp_baddr;
-      waddr <= out_baddr;
+      raddr_a <= a_addr;
+      raddr_b <= b_addr;
+      waddr_c <= c_addr;
     end else if (state_r == WRITE_DATA) begin
-      raddr <= raddr + 'd8;
-      waddr <= waddr + 'd8;
+      raddr_a <= raddr_a + 'd1;
+      raddr_b <= raddr_b + 'd1;
+      waddr_c <= waddr_c + 'd1;
     end
   end
 
@@ -152,19 +171,23 @@ module Compute #
   assign mem_req_valid = (state_r == READ_REQ) | (state_r == WRITE_REQ);
   assign mem_req_opcode = state_r == WRITE_REQ;
   assign mem_req_len = 'd0; // one-word-per-request
-  assign mem_req_addr = (state_r == READ_REQ)? raddr : waddr;
+  assign mem_req_addr = (state_r == READ_REQ & ~rd_done)? {32'd0, raddr_a}
+                      : (state_r == READ_REQ & rd_done)? {32'd0, raddr_b}
+                      : {32'd0, waddr_c};
 
   // read
   always_ff @(posedge clock) begin
-    if ((state_r == READ_DATA) & mem_rd_valid) begin
-      data <= mem_rd_bits + {32'd0, constant};
+    if ((state_r == READ_DATA) & mem_rd_valid & ~rd_done) begin
+      a_reg <= mem_rd_bits;
+    end else if ((state_r == READ_DATA) & mem_rd_valid & rd_done) begin
+      res_reg <= a_reg + mem_rd_bits;
     end
   end
   assign mem_rd_ready = state_r == READ_DATA;
 
   // write
   assign mem_wr_valid = state_r == WRITE_DATA;
-  assign mem_wr_bits = data;
+  assign mem_wr_bits = res_reg;
 
   // count read/write
   always_ff @(posedge clock) begin

@@ -40,8 +40,7 @@
   * ------------------------------
   */
 module RegFile #
- (parameter MEM_ADDR_BITS = 64,
-  parameter HOST_ADDR_BITS = 8,
+ (parameter HOST_ADDR_BITS = 8,
   parameter HOST_DATA_BITS = 32
 )
 (
@@ -62,10 +61,10 @@ module RegFile #
   input                         event_counter_valid,
   input    [HOST_DATA_BITS-1:0] event_counter_value,
 
-  output   [HOST_DATA_BITS-1:0] constant,
   output   [HOST_DATA_BITS-1:0] length,
-  output    [MEM_ADDR_BITS-1:0] inp_baddr,
-  output    [MEM_ADDR_BITS-1:0] out_baddr
+  output   [HOST_DATA_BITS-1:0] a_addr,
+  output   [HOST_DATA_BITS-1:0] b_addr,
+  output   [HOST_DATA_BITS-1:0] c_addr
 );
 
   localparam NUM_REG = 8;
@@ -160,10 +159,6 @@ module RegFile #
         rdata <= rf[4];
       end else if (host_req_addr == 'h14) begin
         rdata <= rf[5];
-      end else if (host_req_addr == 'h18) begin
-        rdata <= rf[6];
-      end else if (host_req_addr == 'h1c) begin
-        rdata <= rf[7];
       end else begin
         rdata <= 'd0;
       end
@@ -174,9 +169,9 @@ module RegFile #
   assign host_resp_bits = rdata;
 
   assign launch = rf[0][0];
-  assign constant = rf[2];
-  assign length = rf[3];
-  assign inp_baddr = {rf[5], rf[4]};
-  assign out_baddr = {rf[7], rf[6]};
+  assign length = rf[2];
+  assign a_addr = rf[3];
+  assign b_addr = rf[4];
+  assign c_addr = rf[5];
 
 endmodule

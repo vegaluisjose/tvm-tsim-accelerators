@@ -66,14 +66,13 @@ module Accel #
   logic                      event_counter_valid;
   logic [HOST_DATA_BITS-1:0] event_counter_value;
 
-  logic [HOST_DATA_BITS-1:0] constant;
   logic [HOST_DATA_BITS-1:0] length;
-  logic  [MEM_ADDR_BITS-1:0] inp_baddr;
-  logic  [MEM_ADDR_BITS-1:0] out_baddr;
+  logic [HOST_DATA_BITS-1:0] a_addr;
+  logic [HOST_DATA_BITS-1:0] b_addr;
+  logic [HOST_DATA_BITS-1:0] c_addr;
 
   RegFile #
   (
-    .MEM_ADDR_BITS(MEM_ADDR_BITS),
     .HOST_ADDR_BITS(HOST_ADDR_BITS),
     .HOST_DATA_BITS(HOST_DATA_BITS)
   )
@@ -96,10 +95,10 @@ module Accel #
     .event_counter_valid (event_counter_valid),
     .event_counter_value (event_counter_value),
 
-    .constant            (constant),
     .length              (length),
-    .inp_baddr           (inp_baddr),
-    .out_baddr           (out_baddr)
+    .a_addr              (a_addr),
+    .b_addr              (b_addr),
+    .c_addr              (c_addr)
   );
 
   Compute #
@@ -130,10 +129,10 @@ module Accel #
     .event_counter_valid (event_counter_valid),
     .event_counter_value (event_counter_value),
 
-    .constant            (constant),
     .length              (length),
-    .inp_baddr           (inp_baddr),
-    .out_baddr           (out_baddr)
+    .a_addr              (a_addr),
+    .b_addr              (b_addr),
+    .c_addr              (c_addr)
   );
 
 endmodule
