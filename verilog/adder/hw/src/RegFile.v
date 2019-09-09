@@ -26,12 +26,10 @@
   * -------------------------|-----
   *  Control status register | 0x00
   *  Cycle counter           | 0x04
-  *  Constant value          | 0x08
-  *  Vector length           | 0x0c
-  *  Input pointer lsb       | 0x10
-  *  Input pointer msb       | 0x14
-  *  Output pointer lsb      | 0x18
-  *  Output pointer msb      | 0x1c
+  *  Vector length           | 0x08
+  *  a addr                  | 0x0c
+  *  b addr                  | 0x10
+  *  c addr                  | 0x14
   * -------------------------------
 
   * ------------------------------

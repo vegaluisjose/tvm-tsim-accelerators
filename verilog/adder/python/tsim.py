@@ -48,15 +48,8 @@ def load_sw():
     sw_lib = osp.join(cur_path, "..", "build", sw_libname)
     load_dll(sw_lib)
 
-def init(hw_backend):
-    """Init hardware and software shared library for accelerator
-
-    Parameters
-    ------------
-    hw_backend : str
-        Hardware backend can be verilog or chisel
-
-    """
+def init():
+    """Init hardware and software shared library for accelerator"""
     cur_path = osp.dirname(osp.abspath(osp.expanduser(__file__)))
     hw_libname = "libhw" + get_ext()
     hw_lib = osp.join(cur_path, "..", "hw", "build", hw_libname)

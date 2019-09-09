@@ -34,7 +34,7 @@ module Accel #
 ( parameter HOST_ADDR_BITS = 8,
   parameter HOST_DATA_BITS = 32,
   parameter MEM_LEN_BITS = 8,
-  parameter MEM_ADDR_BITS = 64,
+  parameter MEM_ADDR_BITS = 32,
   parameter MEM_DATA_BITS = 64
 )
 (

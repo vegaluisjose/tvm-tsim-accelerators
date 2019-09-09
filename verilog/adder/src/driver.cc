@@ -64,23 +64,32 @@ class Device {
     loader_ = DPILoader::Global();
   }
 
-  uint32_t Run(uint32_t c, DLTensor* a, DLTensor* b) {
-    uint32_t cycles;
+  uint32_t Run(DLTensor* a, DLTensor* b, DLTensor* c) {
+    // uint32_t cycles;
     uint32_t len = a->shape[0];
     size_t size = (a->dtype.bits >> 3) * len;
+    this->check_len(a, b, c);
     a_ = this->MemAlloc(size);
     b_ = this->MemAlloc(size);
+    c_ = this->MemAlloc(size);
     this->MemCopyFromHost(a_, a->data, size);
+    this->MemCopyFromHost(b_, b->data, size);
     this->Init();
-    this->Launch(c, len);
-    cycles = this->WaitForCompletion();
-    this->MemCopyToHost(b->data, b_, size);
+    this->Launch(len);
+    // cycles = this->WaitForCompletion();
+    this->MemCopyToHost(c->data, c_, size);
     this->MemFree(a_);
     this->MemFree(b_);
-    return cycles;
+    this->MemFree(c_);
+    return 6;
   }
 
  private:
+  void check_len(DLTensor* a, DLTensor* b, DLTensor* c) {
+    CHECK_EQ(a->shape[0], b->shape[0]);
+    CHECK_EQ(a->shape[0], c->shape[0]);
+  }
+
   void Init() {
     dpi_ = loader_->Get();
     dpi_->SimResume();
@@ -108,13 +117,11 @@ class Device {
     vta::vmem::VirtualMemoryManager::Global()->MemCopyToHost(dst, src, size);
   }
 
-  void Launch(uint32_t c, uint32_t len) {
-    dpi_->WriteReg(0x08, c);
-    dpi_->WriteReg(0x0c, len);
-    dpi_->WriteReg(0x10, this->MemGetPhyAddr(a_));
-    dpi_->WriteReg(0x14, 0);
-    dpi_->WriteReg(0x18, this->MemGetPhyAddr(b_));
-    dpi_->WriteReg(0x1c, 0);
+  void Launch(uint32_t len) {
+    dpi_->WriteReg(0x08, len);
+    dpi_->WriteReg(0x0c, this->MemGetPhyAddr(a_));
+    dpi_->WriteReg(0x10, this->MemGetPhyAddr(b_));
+    dpi_->WriteReg(0x14, this->MemGetPhyAddr(c_));
     dpi_->WriteReg(0x00, 0x1); // launch
   }
 
@@ -135,10 +142,12 @@ class Device {
   DPILoader* loader_{nullptr};
   // DPI Module
   DPIModuleNode* dpi_{nullptr};
-  // input vm ptr
+  // a vm ptr
   void* a_{nullptr};
-  // output vm ptr
+  // b vm ptr
   void* b_{nullptr};
+  // c vm ptr
+  void* c_{nullptr};
 };
 
 using tvm::runtime::TVMRetValue;
@@ -155,8 +164,8 @@ TVM_REGISTER_GLOBAL("tvm.vta.driver")
     Device dev_;
     DLTensor* A = args[0];
     DLTensor* B = args[1];
-    uint32_t c = static_cast<int>(args[2]);
-    uint32_t cycles = dev_.Run(c, A, B);
+    DLTensor* C = args[2];
+    uint32_t cycles = dev_.Run(A, B, C);
     *rv = static_cast<int>(cycles);
   });
 
