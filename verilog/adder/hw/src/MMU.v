@@ -17,9 +17,9 @@
  * under the License.
  */
 
-/** Compute
+/** MMU
   *
-  * Adder procedure:
+  * Procedure:
   *
   * 1. Wait for launch to be asserted
   * 2. Issue a read request for a operand
@@ -31,7 +31,7 @@
   * 6. Check if counter (cnt) is equal to length to assert finish,
   *    otherwise go to step 2.
   */
-module Compute #
+module MMU #
 (
   parameter MEM_LEN_BITS = 8,
   parameter MEM_ADDR_BITS = 64,
@@ -61,7 +61,13 @@ module Compute #
   input    [HOST_DATA_BITS-1:0] length,
   input    [HOST_DATA_BITS-1:0] a_addr,
   input    [HOST_DATA_BITS-1:0] b_addr,
-  input    [HOST_DATA_BITS-1:0] c_addr
+  input    [HOST_DATA_BITS-1:0] c_addr,
+
+  output                        a_valid,
+  output    [MEM_DATA_BITS-1:0] a_data,
+  output                        b_valid,
+  output    [MEM_DATA_BITS-1:0] b_data,
+  input     [MEM_DATA_BITS-1:0] c_data
 );
 
   typedef enum logic [2:0] {IDLE,
@@ -74,8 +80,6 @@ module Compute #
 
   logic               [31:0] cnt;
   logic                      rd_done;
-  logic  [MEM_DATA_BITS-1:0] a_reg;
-  logic  [MEM_DATA_BITS-1:0] res_reg;
   logic [HOST_DATA_BITS-1:0] raddr_a;
   logic [HOST_DATA_BITS-1:0] raddr_b;
   logic [HOST_DATA_BITS-1:0] waddr_c;
@@ -176,18 +180,15 @@ module Compute #
                       : {32'd0, waddr_c};
 
   // read
-  always_ff @(posedge clock) begin
-    if ((state_r == READ_DATA) & mem_rd_valid & ~rd_done) begin
-      a_reg <= mem_rd_bits;
-    end else if ((state_r == READ_DATA) & mem_rd_valid & rd_done) begin
-      res_reg <= a_reg + mem_rd_bits;
-    end
-  end
+  assign a_valid = (state_r == READ_DATA) & mem_rd_valid & ~rd_done;
+  assign a_data = mem_rd_bits;
+  assign b_valid = (state_r == READ_DATA) & mem_rd_valid & rd_done;
+  assign b_data = mem_rd_bits;
   assign mem_rd_ready = state_r == READ_DATA;
 
   // write
   assign mem_wr_valid = state_r == WRITE_DATA;
-  assign mem_wr_bits = res_reg;
+  assign mem_wr_bits = c_data;
 
   // count read/write
   always_ff @(posedge clock) begin

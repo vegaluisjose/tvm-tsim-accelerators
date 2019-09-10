@@ -17,16 +17,17 @@
  * under the License.
  */
 
-/** Add-by-one accelerator.
+/** Accelerator.
   *
   * ___________      ___________
   * |         |      |         |
-  * | HostDPI | <--> | RegFile | <->|
-  * |_________|      |_________|    |
-  *                                 |
-  * ___________      ___________    |
-  * |         |      |         |    |
-  * | MemDPI  | <--> | Compute | <->|
+  * | HostDPI | <--> |   CSR   | <----->|
+  * |_________|      |_________|        |
+  *                                 |-------|
+  *                                 | Adder |
+  * ___________      ___________    |-------|
+  * |         |      |         |        |
+  * | MemDPI  | <--> |   MMU   | <----->|
   * |_________|      |_________|
   *
   */
@@ -70,6 +71,11 @@ module Accel #
   logic [HOST_DATA_BITS-1:0] a_addr;
   logic [HOST_DATA_BITS-1:0] b_addr;
   logic [HOST_DATA_BITS-1:0] c_addr;
+  logic                      a_valid;
+  logic  [MEM_DATA_BITS-1:0] a_data;
+  logic                      b_valid;
+  logic  [MEM_DATA_BITS-1:0] b_data;
+  logic  [MEM_DATA_BITS-1:0] c_data;
 
   RegFile #
   (
@@ -99,16 +105,33 @@ module Accel #
     .a_addr              (a_addr),
     .b_addr              (b_addr),
     .c_addr              (c_addr)
+
   );
 
-  Compute #
+  Adder #
+  (
+    .MEM_DATA_BITS(MEM_DATA_BITS)
+  )
+  adder
+  (
+    .clock               (clock),
+    .reset               (reset),
+
+    .a_valid             (a_valid),
+    .a_data              (a_data),
+    .b_valid             (b_valid),
+    .b_data              (b_data),
+    .c_data              (c_data)
+  );
+
+  MMU #
   (
     .MEM_LEN_BITS(MEM_LEN_BITS),
     .MEM_ADDR_BITS(MEM_ADDR_BITS),
     .MEM_DATA_BITS(MEM_DATA_BITS),
     .HOST_DATA_BITS(HOST_DATA_BITS)
   )
-  comp
+  mmu
   (
     .clock               (clock),
     .reset               (reset),
@@ -132,7 +155,13 @@ module Accel #
     .length              (length),
     .a_addr              (a_addr),
     .b_addr              (b_addr),
-    .c_addr              (c_addr)
+    .c_addr              (c_addr),
+
+    .a_valid             (a_valid),
+    .a_data              (a_data),
+    .b_valid             (b_valid),
+    .b_data              (b_data),
+    .c_data              (c_data)
   );
 
 endmodule
