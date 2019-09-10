@@ -17,9 +17,7 @@
  * under the License.
  */
 
-/** Register File.
-  *
-  * Six 32-bit register file.
+/** CSR.
   *
   * -------------------------------
   *  Register description    | addr
@@ -39,7 +37,7 @@
   *  Finish                  | 1
   * ------------------------------
   */
-module RegFile #
+module CSR #
  (parameter HOST_ADDR_BITS = 8,
   parameter HOST_DATA_BITS = 32
 )

@@ -77,12 +77,12 @@ module Accel #
   logic  [MEM_DATA_BITS-1:0] b_data;
   logic  [MEM_DATA_BITS-1:0] c_data;
 
-  RegFile #
+  CSR #
   (
     .HOST_ADDR_BITS(HOST_ADDR_BITS),
     .HOST_DATA_BITS(HOST_DATA_BITS)
   )
-  rf
+  csr
   (
     .clock               (clock),
     .reset               (reset),
