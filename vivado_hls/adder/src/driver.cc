@@ -120,13 +120,18 @@ class Device {
 
   void Launch(uint32_t len) {
     dpi_->WriteReg(0x10, len);
-    sleep(1);
-    uint32_t val = dpi_->ReadReg(0x10);
+    dpi_->WriteReg(0x18, this->MemGetPhyAddr(a_));
+    dpi_->WriteReg(0x20, this->MemGetPhyAddr(b_));
+    dpi_->WriteReg(0x28, this->MemGetPhyAddr(c_));
+    uint32_t val;
+    val = dpi_->ReadReg(0x10);
     printf("read:%x\n", val);
-    // printf("val:%x\n", val);
-    // dpi_->WriteReg(0x0c, this->MemGetPhyAddr(a_));
-    // dpi_->WriteReg(0x10, this->MemGetPhyAddr(b_));
-    // dpi_->WriteReg(0x14, this->MemGetPhyAddr(c_));
+    val = dpi_->ReadReg(0x00);
+    printf("read:%x\n", val);
+    val = dpi_->ReadReg(0x20);
+    printf("read:%x\n", val);
+    val = dpi_->ReadReg(0x28);
+    printf("read:%x\n", val);
     // dpi_->WriteReg(0x00, 0x1); // launch
   }
 

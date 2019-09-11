@@ -64,13 +64,11 @@ module host #
 
   state_t state_n, state_r;
 
-  always_ff @(posedge clock) begin
-    if (reset) begin
+  always_ff @(posedge clock)
+    if (reset)
       state_r <= IDLE;
-    end else begin
+    else
       state_r <= state_n;
-    end
-  end
 
   always_comb begin
     state_n = IDLE;
@@ -89,30 +87,40 @@ module host #
       READ_REQ: begin
         if (s_axi_control_ARREADY) begin
           state_n = READ_DATA;
+        end else begin
+          state_n = READ_REQ;
         end
       end
 
       READ_DATA: begin
         if (s_axi_control_RVALID) begin
           state_n = IDLE;
+        end else begin
+          state_n = READ_DATA;
         end
       end
 
       WRITE_REQ: begin
         if (s_axi_control_AWREADY) begin
           state_n = WRITE_DATA;
+        end else begin
+          state_n = WRITE_REQ;
         end
       end
 
       WRITE_DATA: begin
         if (s_axi_control_WREADY) begin
           state_n = WRITE_ACK;
+        end else begin
+          state_n = WRITE_DATA;
         end
       end
 
       WRITE_ACK: begin
         if (s_axi_control_BVALID) begin
           state_n = IDLE;
+        end else begin
+          state_n = WRITE_ACK;
         end
       end
 
@@ -142,6 +150,7 @@ module host #
   assign s_axi_control_BREADY = state_r == WRITE_ACK;
   assign s_axi_control_ARVALID = state_r == READ_REQ;
   assign s_axi_control_ARADDR = addr[HOST_AXI_ADDR_BITS-1:0];
+  assign s_axi_control_RREADY = state_r == READ_DATA;
 
   assign host_req_deq = (state_r == READ_REQ & s_axi_control_ARREADY)
                       | (state_r == WRITE_REQ & s_axi_control_AWREADY);
@@ -157,6 +166,9 @@ module host #
     end
     if (s_axi_control_ARVALID & s_axi_control_ARREADY) begin
       $display("raddr:%x", s_axi_control_ARADDR);
+    end
+    if (state_r == IDLE & host_req_valid) begin
+      $display("opcode:%b addr:%x", host_req_opcode, host_req_addr);
     end
   end
 
