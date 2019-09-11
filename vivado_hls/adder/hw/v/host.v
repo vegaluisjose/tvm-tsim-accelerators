@@ -75,53 +75,46 @@ module host #
     case (state_r)
 
       IDLE: begin
-        if (host_req_valid) begin
-          if (host_req_opcode) begin
+        if (host_req_valid)
+          if (host_req_opcode)
             state_n = WRITE_REQ;
-          end else begin
+          else
             state_n = READ_REQ;
-          end
-        end
       end
 
       READ_REQ: begin
-        if (s_axi_control_ARREADY) begin
+        if (s_axi_control_ARREADY)
           state_n = READ_DATA;
-        end else begin
+        else
           state_n = READ_REQ;
-        end
       end
 
       READ_DATA: begin
-        if (s_axi_control_RVALID) begin
+        if (s_axi_control_RVALID)
           state_n = IDLE;
-        end else begin
+        else
           state_n = READ_DATA;
-        end
       end
 
       WRITE_REQ: begin
-        if (s_axi_control_AWREADY) begin
+        if (s_axi_control_AWREADY)
           state_n = WRITE_DATA;
-        end else begin
+        else
           state_n = WRITE_REQ;
-        end
       end
 
       WRITE_DATA: begin
-        if (s_axi_control_WREADY) begin
+        if (s_axi_control_WREADY)
           state_n = WRITE_ACK;
-        end else begin
+        else
           state_n = WRITE_DATA;
-        end
       end
 
       WRITE_ACK: begin
-        if (s_axi_control_BVALID) begin
+        if (s_axi_control_BVALID)
           state_n = IDLE;
-        end else begin
+        else
           state_n = WRITE_ACK;
-        end
       end
 
       default: begin
@@ -158,18 +151,18 @@ module host #
   assign host_resp_bits = s_axi_control_RDATA;
 
   always_ff @(posedge clock) begin
-    if (s_axi_control_AWVALID & s_axi_control_AWREADY) begin
+    if (s_axi_control_AWVALID & s_axi_control_AWREADY)
       $display("waddr:%x", s_axi_control_AWADDR);
-    end
-    if (s_axi_control_WVALID & s_axi_control_WREADY) begin
+
+    if (s_axi_control_WVALID & s_axi_control_WREADY)
       $display("wdata:%x", s_axi_control_WDATA);
-    end
-    if (s_axi_control_ARVALID & s_axi_control_ARREADY) begin
+
+    if (s_axi_control_ARVALID & s_axi_control_ARREADY)
       $display("raddr:%x", s_axi_control_ARADDR);
-    end
-    if (state_r == IDLE & host_req_valid) begin
+
+    if (state_r == IDLE & host_req_valid)
       $display("opcode:%b addr:%x", host_req_opcode, host_req_addr);
-    end
+
   end
 
 endmodule
