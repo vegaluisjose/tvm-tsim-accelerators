@@ -140,10 +140,24 @@ module host #
   assign s_axi_control_WDATA = data;
   assign s_axi_control_WSTRB = 'hf;
   assign s_axi_control_BREADY = state_r == WRITE_ACK;
+  assign s_axi_control_ARVALID = state_r == READ_REQ;
+  assign s_axi_control_ARADDR = addr[HOST_AXI_ADDR_BITS-1:0];
 
   assign host_req_deq = (state_r == READ_REQ & s_axi_control_ARREADY)
                       | (state_r == WRITE_REQ & s_axi_control_AWREADY);
   assign host_resp_valid = s_axi_control_RVALID;
   assign host_resp_bits = s_axi_control_RDATA;
+
+  always_ff @(posedge clock) begin
+    if (s_axi_control_AWVALID & s_axi_control_AWREADY) begin
+      $display("waddr:%x", s_axi_control_AWADDR);
+    end
+    if (s_axi_control_WVALID & s_axi_control_WREADY) begin
+      $display("wdata:%x", s_axi_control_WDATA);
+    end
+    if (s_axi_control_ARVALID & s_axi_control_ARREADY) begin
+      $display("raddr:%x", s_axi_control_ARADDR);
+    end
+  end
 
 endmodule

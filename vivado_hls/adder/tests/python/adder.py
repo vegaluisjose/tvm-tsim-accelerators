@@ -22,7 +22,8 @@ import tsim
 def test_accel():
     rmax = 64
     dtype = "uint8"
-    n = np.random.randint(1, rmax)
+    # n = np.random.randint(1, rmax)
+    n = 8
     ctx = tvm.cpu(0)
     a = tvm.nd.array(np.random.randint(rmax, size=n).astype(dtype), ctx)
     b = tvm.nd.array(np.random.randint(rmax, size=n).astype(dtype), ctx)

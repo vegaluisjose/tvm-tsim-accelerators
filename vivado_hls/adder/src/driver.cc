@@ -22,6 +22,7 @@
 #include <vta/dpi/module.h>
 
 #include "vmem/virtual_memory.h"
+#include "unistd.h"
 
 namespace vta {
 namespace driver {
@@ -96,12 +97,12 @@ class Device {
   }
 
   void* MemAlloc(size_t size) {
-    void * addr = vta::vmem::VirtualMemoryManager::Global()->Alloc(size);
+    void* addr = vta::vmem::VirtualMemoryManager::Global()->Alloc(size);
     return reinterpret_cast<void*>(vta::vmem::VirtualMemoryManager::Global()->GetPhyAddr(addr));
   }
 
   void MemFree(void* buf) {
-    void * addr = vta::vmem::VirtualMemoryManager::Global()->GetAddr(reinterpret_cast<uint64_t>(buf));
+    void* addr = vta::vmem::VirtualMemoryManager::Global()->GetAddr(reinterpret_cast<uint64_t>(buf));
     vta::vmem::VirtualMemoryManager::Global()->Free(addr);
   }
 
@@ -119,7 +120,9 @@ class Device {
 
   void Launch(uint32_t len) {
     dpi_->WriteReg(0x10, len);
-    // uint32_t val = dpi_->ReadReg(0x10);
+    sleep(1);
+    uint32_t val = dpi_->ReadReg(0x10);
+    printf("read:%x\n", val);
     // printf("val:%x\n", val);
     // dpi_->WriteReg(0x0c, this->MemGetPhyAddr(a_));
     // dpi_->WriteReg(0x10, this->MemGetPhyAddr(b_));
