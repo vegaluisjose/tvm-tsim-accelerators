@@ -17,7 +17,7 @@
  * under the License.
  */
 
-module host #
+module host_axi #
 ( parameter HOST_ADDR_BITS = 8,
   parameter HOST_DATA_BITS = 32,
   parameter HOST_AXI_ADDR_BITS = 6,

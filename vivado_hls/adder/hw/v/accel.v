@@ -69,14 +69,14 @@ module accel #
   logic                               s_axi_control_BREADY;
   logic                         [1:0] s_axi_control_BRESP;
 
-  host #
+  host_axi #
   (
     .HOST_ADDR_BITS(HOST_ADDR_BITS),
     .HOST_DATA_BITS(HOST_DATA_BITS),
     .HOST_AXI_ADDR_BITS(HOST_AXI_ADDR_BITS),
     .HOST_AXI_DATA_BITS(HOST_AXI_DATA_BITS)
   )
-  h
+  host
   (
     .clock                   (clock),
     .reset                   (reset),
