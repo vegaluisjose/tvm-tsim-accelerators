@@ -65,8 +65,7 @@ class Device {
     loader_ = DPILoader::Global();
   }
 
-  uint32_t Run(DLTensor* a, DLTensor* b, DLTensor* c) {
-    uint32_t cycles = 4;
+  void Run(DLTensor* a, DLTensor* b, DLTensor* c) {
     uint32_t len = a->shape[0];
     size_t size = (a->dtype.bits >> 3) * len;
     this->check_len(a, b, c);
@@ -77,12 +76,11 @@ class Device {
     this->MemCopyFromHost(b_, b->data, size);
     this->Init();
     this->Launch(len);
-    // cycles = this->WaitForCompletion();
+    this->WaitForCompletion();
     this->MemCopyToHost(c->data, c_, size);
     this->MemFree(a_);
     this->MemFree(b_);
     this->MemFree(c_);
-    return cycles;
   }
 
  private:
@@ -123,31 +121,21 @@ class Device {
     dpi_->WriteReg(0x18, this->MemGetPhyAddr(a_));
     dpi_->WriteReg(0x20, this->MemGetPhyAddr(b_));
     dpi_->WriteReg(0x28, this->MemGetPhyAddr(c_));
-    uint32_t val;
-    val = dpi_->ReadReg(0x10);
-    printf("read:%x\n", val);
-    val = dpi_->ReadReg(0x00);
-    printf("read:%x\n", val);
-    val = dpi_->ReadReg(0x20);
-    printf("read:%x\n", val);
-    val = dpi_->ReadReg(0x28);
-    printf("read:%x\n", val);
-    // dpi_->WriteReg(0x00, 0x1); // launch
+    dpi_->WriteReg(0x00, 0x1); // launch
   }
 
-  uint32_t WaitForCompletion() {
+  void WaitForCompletion() {
     uint32_t i, val;
     for (i = 0; i < wait_cycles_; i++) {
       val = dpi_->ReadReg(0x00);
-      if (val == 2) break; // finish
+      // printf("[driver] val:%x\n", val);
+      if ((val & 2) == 2) break; // finish
     }
-    val = dpi_->ReadReg(0x04);
     dpi_->SimWait();
-    return val;
   }
 
   // wait cycles
-  uint32_t wait_cycles_{100000000};
+  uint32_t wait_cycles_{100};
   // DPI loader
   DPILoader* loader_{nullptr};
   // DPI Module
@@ -175,8 +163,7 @@ TVM_REGISTER_GLOBAL("tvm.vta.driver")
     DLTensor* A = args[0];
     DLTensor* B = args[1];
     DLTensor* C = args[2];
-    uint32_t cycles = dev_.Run(A, B, C);
-    *rv = static_cast<int>(cycles);
+    dev_.Run(A, B, C);
   });
 
 }  // namespace driver

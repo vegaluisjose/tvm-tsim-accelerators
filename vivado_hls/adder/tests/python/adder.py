@@ -30,11 +30,14 @@ def test_accel():
     c = tvm.nd.array(np.zeros(n).astype(dtype), ctx)
     f = tsim.load_module()
     f(a, b, c)
+    print(a.asnumpy())
+    print(b.asnumpy())
     # msg = "cycles:{0:4} n:{1:2}".format(cycles, n, c)
     # np.testing.assert_equal(c.asnumpy(), a.asnumpy() + b.asnumpy(), err_msg = "[FAIL] " + msg)
     # print("[PASS] " + msg)
 
 if __name__ == "__main__":
+    np.random.seed(0)
     tsim.init()
     for i in range(1):
         test_accel()

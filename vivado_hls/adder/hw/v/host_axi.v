@@ -151,19 +151,20 @@ module host_axi #
   assign host_resp_valid = s_axi_control_RVALID;
   assign host_resp_bits = s_axi_control_RDATA;
 
-  always_ff @(posedge clock) begin
-    if (s_axi_control_AWVALID & s_axi_control_AWREADY)
-      $display("waddr:%x", s_axi_control_AWADDR);
+  if (0) begin
+    always_ff @(posedge clock) begin
+      if (s_axi_control_AWVALID & s_axi_control_AWREADY)
+        $display("[host] waddr:%x", s_axi_control_AWADDR);
 
-    if (s_axi_control_WVALID & s_axi_control_WREADY)
-      $display("wdata:%x", s_axi_control_WDATA);
+      if (s_axi_control_WVALID & s_axi_control_WREADY)
+        $display("[host] wdata:%x", s_axi_control_WDATA);
 
-    if (s_axi_control_ARVALID & s_axi_control_ARREADY)
-      $display("raddr:%x", s_axi_control_ARADDR);
+      if (s_axi_control_ARVALID & s_axi_control_ARREADY)
+        $display("[host] raddr:%x", s_axi_control_ARADDR);
 
-    if (state_r == IDLE & host_req_valid)
-      $display("opcode:%b addr:%x", host_req_opcode, host_req_addr);
-
+      if (state_r == IDLE & host_req_valid)
+        $display("[host] opcode:%b addr:%x", host_req_opcode, host_req_addr);
+    end
   end
 
 endmodule
