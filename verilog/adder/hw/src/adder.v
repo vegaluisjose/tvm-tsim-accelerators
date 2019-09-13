@@ -17,7 +17,7 @@
  * under the License.
  */
 
- module Adder #
+ module adder #
 (
   parameter MEM_DATA_BITS = 64
 )

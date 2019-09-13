@@ -24,7 +24,7 @@
   * | HostDPI | <--> |   CSR   | <----->|
   * |_________|      |_________|        |
   *                                 |-------|
-  *                                 | Adder |
+  *                                 | adder |
   * ___________      ___________    |-------|
   * |         |      |         |        |
   * | MemDPI  | <--> |   MMU   | <----->|
@@ -108,11 +108,11 @@ module Accel #
 
   );
 
-  Adder #
+  adder #
   (
     .MEM_DATA_BITS(MEM_DATA_BITS)
   )
-  adder
+  a
   (
     .clock               (clock),
     .reset               (reset),
