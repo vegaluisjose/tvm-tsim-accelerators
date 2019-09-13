@@ -23,15 +23,17 @@ import chisel3._
 import chisel3.util._
 import vta.dpi._
 
-/** Compute
+/** MemoryUnit
   *
-  * Add-by-one procedure:
+  * Procedure:
   *
   * 1. Wait for launch to be asserted
-  * 2. Issue a read request for 8-byte value at inp_baddr address
+  * 2. Issue a read request for a operand
   * 3. Wait for the value
-  * 4. Issue a write request for 8-byte value at out_baddr address
-  * 5. Increment read-address and write-address for next value
+  * 4. Issue a read request for b operand
+  * 5. Wait for the value
+  * 4. Issue a write request for c
+  * 5. Increment read-address and write-address for next values
   * 6. Check if counter (cnt) is equal to length to assert finish,
   *    otherwise go to step 2.
   */
@@ -46,13 +48,15 @@ class Compute(implicit config: AccelConfig) extends Module {
   })
   val sIdle :: sReadReq :: sReadData :: sWriteReq :: sWriteData :: Nil = Enum(5)
   val state = RegInit(sIdle)
-  val const = io.vals(0)
-  val length = io.vals(1)
+  val length = io.vals(0)
   val cycles = RegInit(0.U(config.regBits.W))
-  val reg = Reg(chiselTypeOf(io.mem.rd.bits))
+  val a_reg = Reg(chiselTypeOf(io.mem.rd.bits))
+  val b_reg = Reg(chiselTypeOf(io.mem.rd.bits))
   val cnt = Reg(UInt(config.regBits.W))
-  val raddr = Reg(UInt(config.ptrBits.W))
-  val waddr = Reg(UInt(config.ptrBits.W))
+  val rd_done = RegInit(false.B)
+  val a_addr = Reg(UInt(config.ptrBits.W))
+  val b_addr = Reg(UInt(config.ptrBits.W))
+  val c_addr = Reg(UInt(config.ptrBits.W))
 
   switch(state) {
     is(sIdle) {
@@ -65,7 +69,11 @@ class Compute(implicit config: AccelConfig) extends Module {
     }
     is(sReadData) {
       when(io.mem.rd.valid) {
-        state := sWriteReq
+        when(rd_done) {
+          state := sWriteReq
+        } .otherwise {
+          state := sReadReq
+        }
       }
     }
     is(sWriteReq) {
@@ -93,29 +101,44 @@ class Compute(implicit config: AccelConfig) extends Module {
   io.ecnt(0).bits := cycles
 
   // calculate next address
-  when(state === sIdle) {
-    raddr := io.ptrs(0)
-    waddr := io.ptrs(1)
+  when(state === sIdle && io.launch) {
+    a_addr := io.ptrs(0)
+    b_addr := io.ptrs(1)
+    c_addr := io.ptrs(2)
   }.elsewhen(state === sWriteData) { // increment by 8-bytes
-    raddr := raddr + 8.U
-    waddr := waddr + 8.U
+    a_addr := a_addr + 1.U
+    b_addr := b_addr + 1.U
+    c_addr := c_addr + 1.U
   }
 
   // create request
+  when (state === sIdle || state === sWriteData) {
+    rd_done := false.B
+  } .elsewhen (state === sReadData && io.mem.rd.valid) {
+    rd_done := true.B
+  }
+
   io.mem.req.valid := state === sReadReq | state === sWriteReq
   io.mem.req.opcode := state === sWriteReq
   io.mem.req.len := 0.U // one-word-per-request
-  io.mem.req.addr := Mux(state === sReadReq, raddr, waddr)
+  io.mem.req.addr := Mux(state === sReadReq & ~rd_done,
+                         a_addr,
+                         Mux(state === sReadReq & rd_done, b_addr, c_addr))
 
   // read
-  when(state === sReadData && io.mem.rd.valid) {
-    reg := io.mem.rd.bits + const
+  when(state === sReadData && io.mem.rd.valid & ~rd_done) {
+    a_reg := io.mem.rd.bits
   }
+
+  when(state === sReadData && io.mem.rd.valid & rd_done) {
+    b_reg := io.mem.rd.bits
+  }
+
   io.mem.rd.ready := state === sReadData
 
   // write
   io.mem.wr.valid := state === sWriteData
-  io.mem.wr.bits := reg
+  io.mem.wr.bits := a_reg + b_reg
 
   // count read/write
   when(state === sIdle) {

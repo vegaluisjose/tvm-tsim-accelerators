@@ -23,30 +23,6 @@ import chisel3._
 import chisel3.util._
 import vta.dpi._
 
-/** Register File.
-  *
-  * Six 32-bit register file.
-  *
-  * -------------------------------
-  *  Register description    | addr
-  * -------------------------|-----
-  *  Control status register | 0x00
-  *  Cycle counter           | 0x04
-  *  Constant value          | 0x08
-  *  Vector length           | 0x0c
-  *  Input pointer lsb       | 0x10
-  *  Input pointer msb       | 0x14
-  *  Output pointer lsb      | 0x18
-  *  Output pointer msb      | 0x1c
-  * -------------------------------
-
-  * ------------------------------
-  *  Control status register | bit
-  * ------------------------------
-  *  Launch                  | 0
-  *  Finish                  | 1
-  * ------------------------------
-  */
 class RegFile(implicit config: AccelConfig) extends Module {
   val io = IO(new Bundle {
     val launch = Output(Bool())
@@ -72,7 +48,8 @@ class RegFile(implicit config: AccelConfig) extends Module {
 
   io.host.req.deq := state === sIdle & io.host.req.valid
 
-  val nTotal = config.nCtrl + config.nECnt + config.nVals + (2 * config.nPtrs)
+  val nPtrs = if (config.ptrBits == 32) config.nPtrs else 2 * config.nPtrs
+  val nTotal = config.nCtrl + config.nECnt + config.nVals + nPtrs
   val reg =
     Seq.fill(nTotal)(RegInit(0.U.asTypeOf(chiselTypeOf(io.host.req.value))))
   val addr = Seq.tabulate(nTotal)(_ * 4)
@@ -97,7 +74,7 @@ class RegFile(implicit config: AccelConfig) extends Module {
     }
   }
 
-  for (i <- 0 until (config.nVals + (2 * config.nPtrs))) {
+  for (i <- 0 until (config.nVals + nPtrs)) {
     when(
       state === sIdle && io.host.req.valid &&
         io.host.req.opcode && addr(vo + i).U === io.host.req.addr) {
@@ -119,7 +96,13 @@ class RegFile(implicit config: AccelConfig) extends Module {
     io.vals(i) := reg(vo + i)
   }
 
-  for (i <- 0 until config.nPtrs) {
-    io.ptrs(i) := Cat(reg(po + (2 * i) + 1), reg(po + (2 * i)))
+  if (config.ptrBits == 32) {
+    for (i <- 0 until nPtrs) {
+      io.ptrs(i) := reg(po + i)
+    }
+  } else {
+    for (i <- 0 until config.nPtrs) {
+      io.ptrs(i) := Cat(reg(po + (2 * i) + 1), reg(po + (2 * i)))
+    }
   }
 }

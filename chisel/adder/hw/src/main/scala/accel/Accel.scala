@@ -22,26 +22,43 @@ package accel
 import chisel3._
 import vta.dpi._
 
-/** Add-by-one accelerator.
+/** Adder accelerator.
   *
   * ___________      ___________
   * |         |      |         |
-  * | HostDPI | <--> | RegFile | <->|
-  * |_________|      |_________|    |
-  *                                 |
-  * ___________      ___________    |
-  * |         |      |         |    |
-  * | MemDPI  | <--> | Compute | <->|
+  * | HostDPI | <--> |   CSR   | <----->|
+  * |_________|      |_________|        |
+  *                                 |----------
+  *                                 |  Adder  |
+  * ___________      ___________    |----------
+  * |         |      |         |        |
+  * | MemDPI  | <--> |  MUnit  | <----->|
   * |_________|      |_________|
   *
+  */
+  /** CSR.
+  *
+  *
+  * -------------------------------
+  *  Register description    | addr
+  * -------------------------|-----
+  *  Control status register | 0x00
+  *  Cycle counter           | 0x04
+  *  Vector length           | 0x08
+  *  a pointer               | 0x0c
+  *  b pointer               | 0x10
+  *  c pointer               | 0x14
+  * -------------------------------
   */
 case class AccelConfig() {
   val nCtrl = 1
   val nECnt = 1
-  val nVals = 2
-  val nPtrs = 2
+  val nVals = 1
+  val nPtrs = 3
   val regBits = 32
-  val ptrBits = 2 * regBits
+  val ptrBits = regBits
+  assert(regBits == 32, s"support only for 32-bit registers")
+  assert(ptrBits == 32 || ptrBits == 64, s"support only for 32-bit or 64-bit pointers")
 }
 
 class Accel extends Module {
