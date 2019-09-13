@@ -31,7 +31,7 @@
   * 6. Check if counter (cnt) is equal to length to assert finish,
   *    otherwise go to step 2.
   */
-module MMU #
+module mmu #
 (
   parameter MEM_LEN_BITS = 8,
   parameter MEM_ADDR_BITS = 64,

@@ -37,7 +37,7 @@
   *  Finish                  | 1
   * ------------------------------
   */
-module CSR #
+module csr #
  (parameter HOST_ADDR_BITS = 8,
   parameter HOST_DATA_BITS = 32
 )

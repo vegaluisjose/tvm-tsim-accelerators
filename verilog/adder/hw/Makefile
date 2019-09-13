@@ -36,7 +36,7 @@ ifeq (, $(TVM_HOME))
   $(error "TVM_HOME not set")
 endif
 
-TOP = TestAccel
+TOP = tb_accel
 BUILD_NAME = build
 USE_TRACE = 0
 LIBNAME = libhw

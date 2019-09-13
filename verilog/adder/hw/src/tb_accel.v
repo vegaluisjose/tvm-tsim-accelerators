@@ -22,7 +22,7 @@
   * Instantiate host/memory DPI modules and connect them to the accelerator.
   *
   */
-module TestAccel
+module tb_accel
 (
   input clock,
   input reset,
@@ -93,7 +93,7 @@ module TestAccel
     .dpi_rd_ready   (mem_rd_ready)
   );
 
-  Accel #
+  accel #
   (
     .HOST_ADDR_BITS(HOST_ADDR_BITS),
     .HOST_DATA_BITS(HOST_DATA_BITS),
@@ -101,7 +101,7 @@ module TestAccel
     .MEM_ADDR_BITS(MEM_ADDR_BITS),
     .MEM_DATA_BITS(MEM_DATA_BITS)
   )
-  accel
+  acc
   (
     .clock           (clock),
     .reset           (reset),

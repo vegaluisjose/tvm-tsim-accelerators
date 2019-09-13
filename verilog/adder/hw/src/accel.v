@@ -31,7 +31,7 @@
   * |_________|      |_________|
   *
   */
-module Accel #
+module accel #
 ( parameter HOST_ADDR_BITS = 8,
   parameter HOST_DATA_BITS = 32,
   parameter MEM_LEN_BITS = 8,
@@ -77,12 +77,12 @@ module Accel #
   logic  [MEM_DATA_BITS-1:0] b_data;
   logic  [MEM_DATA_BITS-1:0] c_data;
 
-  CSR #
+  csr #
   (
     .HOST_ADDR_BITS(HOST_ADDR_BITS),
     .HOST_DATA_BITS(HOST_DATA_BITS)
   )
-  csr
+  c
   (
     .clock               (clock),
     .reset               (reset),
@@ -124,14 +124,14 @@ module Accel #
     .c_data              (c_data)
   );
 
-  MMU #
+  mmu #
   (
     .MEM_LEN_BITS(MEM_LEN_BITS),
     .MEM_ADDR_BITS(MEM_ADDR_BITS),
     .MEM_DATA_BITS(MEM_DATA_BITS),
     .HOST_DATA_BITS(HOST_DATA_BITS)
   )
-  mmu
+  m
   (
     .clock               (clock),
     .reset               (reset),
