@@ -71,7 +71,7 @@ class Compute(implicit config: AccelConfig) extends Module {
       when(io.mem.rd.valid) {
         when(rd_done) {
           state := sWriteReq
-        } .otherwise {
+        }.otherwise {
           state := sReadReq
         }
       }
@@ -112,9 +112,9 @@ class Compute(implicit config: AccelConfig) extends Module {
   }
 
   // create request
-  when (state === sIdle || state === sWriteData) {
+  when(state === sIdle || state === sWriteData) {
     rd_done := false.B
-  } .elsewhen (state === sReadData && io.mem.rd.valid) {
+  }.elsewhen(state === sReadData && io.mem.rd.valid) {
     rd_done := true.B
   }
 

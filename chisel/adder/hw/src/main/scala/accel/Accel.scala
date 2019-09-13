@@ -36,7 +36,7 @@ import vta.dpi._
   * |_________|      |_________|
   *
   */
-  /** CSR.
+/** CSR.
   *
   *
   * -------------------------------
@@ -58,7 +58,8 @@ case class AccelConfig() {
   val regBits = 32
   val ptrBits = regBits
   assert(regBits == 32, s"support only for 32-bit registers")
-  assert(ptrBits == 32 || ptrBits == 64, s"support only for 32-bit or 64-bit pointers")
+  assert(ptrBits == 32 || ptrBits == 64,
+         s"support only for 32-bit or 64-bit pointers")
 }
 
 class Accel extends Module {
