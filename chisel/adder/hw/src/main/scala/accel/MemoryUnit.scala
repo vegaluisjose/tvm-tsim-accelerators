@@ -50,8 +50,6 @@ class MemoryUnit(implicit config: AccelConfig) extends Module {
   val state = RegInit(sIdle)
   val length = io.vals(0)
   val cycles = RegInit(0.U(config.regBits.W))
-  val a_reg = RegInit(0.U(config.adderBits.W))
-  val b_reg = RegInit(0.U(config.adderBits.W))
   val cnt = Reg(UInt(config.regBits.W))
   val rd_done = RegInit(false.B)
   val a_addr = Reg(UInt(config.ptrBits.W))
@@ -125,20 +123,18 @@ class MemoryUnit(implicit config: AccelConfig) extends Module {
                          a_addr,
                          Mux(state === sReadReq & rd_done, b_addr, c_addr))
 
-  // read
-  when(state === sReadData && io.mem.rd.valid & ~rd_done) {
-    a_reg := io.mem.rd.bits
-  }
-
-  when(state === sReadData && io.mem.rd.valid & rd_done) {
-    b_reg := io.mem.rd.bits
-  }
+  // adder
+  val adder = Module(new Adder)
+  adder.io.a.valid := (state === sReadData) & io.mem.rd.valid & ~rd_done
+  adder.io.b.valid := (state === sReadData) & io.mem.rd.valid & rd_done
+  adder.io.a.bits := io.mem.rd.bits
+  adder.io.b.bits := io.mem.rd.bits
 
   io.mem.rd.ready := state === sReadData
 
   // write
   io.mem.wr.valid := state === sWriteData
-  io.mem.wr.bits := a_reg + b_reg
+  io.mem.wr.bits := adder.io.c
 
   // count read/write
   when(state === sIdle) {
