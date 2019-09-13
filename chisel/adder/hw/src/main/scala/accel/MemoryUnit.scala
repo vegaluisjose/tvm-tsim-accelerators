@@ -37,7 +37,7 @@ import vta.dpi._
   * 6. Check if counter (cnt) is equal to length to assert finish,
   *    otherwise go to step 2.
   */
-class Compute(implicit config: AccelConfig) extends Module {
+class MemoryUnit(implicit config: AccelConfig) extends Module {
   val io = IO(new Bundle {
     val launch = Input(Bool())
     val finish = Output(Bool())

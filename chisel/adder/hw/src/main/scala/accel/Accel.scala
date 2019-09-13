@@ -68,13 +68,13 @@ class Accel extends Module {
     val mem = new VTAMemDPIMaster
   })
   implicit val config = AccelConfig()
-  val rf = Module(new RegFile)
-  val ce = Module(new Compute)
-  rf.io.host <> io.host
-  io.mem <> ce.io.mem
-  ce.io.launch := rf.io.launch
-  rf.io.finish := ce.io.finish
-  rf.io.ecnt <> ce.io.ecnt
-  ce.io.vals <> rf.io.vals
-  ce.io.ptrs <> rf.io.ptrs
+  val csr = Module(new CSR)
+  val mu = Module(new MemoryUnit)
+  csr.io.host <> io.host
+  io.mem <> mu.io.mem
+  mu.io.launch := csr.io.launch
+  csr.io.finish := mu.io.finish
+  csr.io.ecnt <> mu.io.ecnt
+  mu.io.vals <> csr.io.vals
+  mu.io.ptrs <> csr.io.ptrs
 }

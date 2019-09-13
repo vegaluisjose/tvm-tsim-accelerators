@@ -23,7 +23,7 @@ import chisel3._
 import chisel3.util._
 import vta.dpi._
 
-class RegFile(implicit config: AccelConfig) extends Module {
+class CSR(implicit config: AccelConfig) extends Module {
   val io = IO(new Bundle {
     val launch = Output(Bool())
     val finish = Input(Bool())
