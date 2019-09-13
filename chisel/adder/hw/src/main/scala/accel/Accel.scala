@@ -55,6 +55,7 @@ case class AccelConfig() {
   val nECnt = 1
   val nVals = 1
   val nPtrs = 3
+  val adderBits = 8
   val regBits = 32
   val ptrBits = regBits
   assert(regBits == 32, s"support only for 32-bit registers")
