@@ -24,9 +24,9 @@ import chisel3.util._
 
 class Adder(implicit config: AccelConfig) extends Module {
   val io = IO(new Bundle {
-    val a = Flipped(ValidIO(UInt((config.adderBits).W)))
-    val b = Flipped(ValidIO(UInt((config.adderBits).W)))
-    val c = Output(UInt((config.adderBits).W))
+    val a = Flipped(ValidIO(UInt(config.adderBits.W)))
+    val b = Flipped(ValidIO(UInt(config.adderBits.W)))
+    val c = Output(UInt(config.adderBits.W))
   })
   val a_reg = RegInit(0.U(config.adderBits.W))
   val b_reg = RegInit(0.U(config.adderBits.W))

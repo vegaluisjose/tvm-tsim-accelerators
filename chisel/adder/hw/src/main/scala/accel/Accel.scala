@@ -71,6 +71,7 @@ class Accel extends Module {
   implicit val config = AccelConfig()
   val csr = Module(new CSR)
   val mu = Module(new MemoryUnit)
+  val adder = Module(new Adder)
   csr.io.host <> io.host
   io.mem <> mu.io.mem
   mu.io.launch := csr.io.launch
@@ -78,4 +79,7 @@ class Accel extends Module {
   csr.io.ecnt <> mu.io.ecnt
   mu.io.vals <> csr.io.vals
   mu.io.ptrs <> csr.io.ptrs
+  adder.io.a <> mu.io.a
+  adder.io.b <> mu.io.b
+  mu.io.c <> adder.io.c
 }

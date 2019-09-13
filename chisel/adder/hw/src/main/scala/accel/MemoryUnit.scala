@@ -45,6 +45,9 @@ class MemoryUnit(implicit config: AccelConfig) extends Module {
     val vals = Input(Vec(config.nVals, UInt(config.regBits.W)))
     val ptrs = Input(Vec(config.nPtrs, UInt(config.ptrBits.W)))
     val mem = new VTAMemDPIMaster
+    val a = ValidIO(UInt(config.adderBits.W))
+    val b = ValidIO(UInt(config.adderBits.W))
+    val c = Input(UInt(config.adderBits.W))
   })
   val sIdle :: sReadReq :: sReadData :: sWriteReq :: sWriteData :: Nil = Enum(5)
   val state = RegInit(sIdle)
@@ -124,17 +127,16 @@ class MemoryUnit(implicit config: AccelConfig) extends Module {
                          Mux(state === sReadReq & rd_done, b_addr, c_addr))
 
   // adder
-  val adder = Module(new Adder)
-  adder.io.a.valid := (state === sReadData) & io.mem.rd.valid & ~rd_done
-  adder.io.b.valid := (state === sReadData) & io.mem.rd.valid & rd_done
-  adder.io.a.bits := io.mem.rd.bits
-  adder.io.b.bits := io.mem.rd.bits
+  io.a.valid := (state === sReadData) & io.mem.rd.valid & ~rd_done
+  io.b.valid := (state === sReadData) & io.mem.rd.valid & rd_done
+  io.a.bits := io.mem.rd.bits
+  io.b.bits := io.mem.rd.bits
 
   io.mem.rd.ready := state === sReadData
 
   // write
   io.mem.wr.valid := state === sWriteData
-  io.mem.wr.bits := adder.io.c
+  io.mem.wr.bits := io.c
 
   // count read/write
   when(state === sIdle) {
