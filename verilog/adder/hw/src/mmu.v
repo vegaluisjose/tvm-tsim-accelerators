@@ -36,7 +36,8 @@ module mmu #
   parameter MEM_LEN_BITS = 8,
   parameter MEM_ADDR_BITS = 64,
   parameter MEM_DATA_BITS = 64,
-  parameter HOST_DATA_BITS = 32
+  parameter HOST_DATA_BITS = 32,
+  parameter ADDER_BITS = 8
 )
 (
   input                         clock,
@@ -64,10 +65,10 @@ module mmu #
   input    [HOST_DATA_BITS-1:0] c_addr,
 
   output                        a_valid,
-  output    [MEM_DATA_BITS-1:0] a_data,
+  output       [ADDER_BITS-1:0] a_data,
   output                        b_valid,
-  output    [MEM_DATA_BITS-1:0] b_data,
-  input     [MEM_DATA_BITS-1:0] c_data
+  output       [ADDER_BITS-1:0] b_data,
+  input        [ADDER_BITS-1:0] c_data
 );
 
   typedef enum logic [2:0] {IDLE,
@@ -181,14 +182,14 @@ module mmu #
 
   // read
   assign a_valid = (state_r == READ_DATA) & mem_rd_valid & ~rd_done;
-  assign a_data = mem_rd_bits;
+  assign a_data = mem_rd_bits[ADDER_BITS-1:0];
   assign b_valid = (state_r == READ_DATA) & mem_rd_valid & rd_done;
-  assign b_data = mem_rd_bits;
+  assign b_data = mem_rd_bits[ADDER_BITS-1:0];
   assign mem_rd_ready = state_r == READ_DATA;
 
   // write
   assign mem_wr_valid = state_r == WRITE_DATA;
-  assign mem_wr_bits = c_data;
+  assign mem_wr_bits = {{(MEM_DATA_BITS-ADDER_BITS){1'b0}}, c_data};
 
   // count read/write
   always_ff @(posedge clock) begin

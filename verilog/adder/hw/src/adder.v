@@ -19,20 +19,20 @@
 
  module adder #
 (
-  parameter MEM_DATA_BITS = 64
+  parameter ADDER_BITS = 8
 )
 (
   input                         clock,
   input                         reset,
   input                         a_valid,
-  input     [MEM_DATA_BITS-1:0] a_data,
+  input     [ADDER_BITS-1:0] a_data,
   input                         b_valid,
-  input     [MEM_DATA_BITS-1:0] b_data,
-  output    [MEM_DATA_BITS-1:0] c_data
+  input     [ADDER_BITS-1:0] b_data,
+  output    [ADDER_BITS-1:0] c_data
 );
 
-  logic [MEM_DATA_BITS-1:0] a_reg;
-  logic [MEM_DATA_BITS-1:0] b_reg;
+  logic [ADDER_BITS-1:0] a_reg;
+  logic [ADDER_BITS-1:0] b_reg;
 
   always_ff @(posedge clock) begin
     if (reset) begin

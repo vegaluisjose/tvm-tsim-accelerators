@@ -61,6 +61,8 @@ module accel #
   output                        mem_rd_ready
 );
 
+  localparam ADDER_BITS = 8;
+
   logic                      launch;
   logic                      finish;
 
@@ -72,10 +74,10 @@ module accel #
   logic [HOST_DATA_BITS-1:0] b_addr;
   logic [HOST_DATA_BITS-1:0] c_addr;
   logic                      a_valid;
-  logic  [MEM_DATA_BITS-1:0] a_data;
+  logic     [ADDER_BITS-1:0] a_data;
   logic                      b_valid;
-  logic  [MEM_DATA_BITS-1:0] b_data;
-  logic  [MEM_DATA_BITS-1:0] c_data;
+  logic     [ADDER_BITS-1:0] b_data;
+  logic     [ADDER_BITS-1:0] c_data;
 
   csr #
   (
@@ -110,7 +112,7 @@ module accel #
 
   adder #
   (
-    .MEM_DATA_BITS(MEM_DATA_BITS)
+    .ADDER_BITS(ADDER_BITS)
   )
   a
   (
@@ -129,7 +131,8 @@ module accel #
     .MEM_LEN_BITS(MEM_LEN_BITS),
     .MEM_ADDR_BITS(MEM_ADDR_BITS),
     .MEM_DATA_BITS(MEM_DATA_BITS),
-    .HOST_DATA_BITS(HOST_DATA_BITS)
+    .HOST_DATA_BITS(HOST_DATA_BITS),
+    .ADDER_BITS(ADDER_BITS)
   )
   m
   (
