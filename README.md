@@ -15,8 +15,8 @@
 <!--- specific language governing permissions and limitations -->
 <!--- under the License. -->
 
-TSIM Installation
-=================
+TSIM
+====
 
 *TSIM* is a cycle-accurate hardware simulation environment that can be invoked and managed directly from TVM.
 This simulation environment can be used in both OSX and Linux. *TSIM* depends on [Verilator](https://www.veripool.org/wiki/verilator) to work.
