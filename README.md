@@ -19,8 +19,13 @@ TSIM Installation
 =================
 
 *TSIM* is a cycle-accurate hardware simulation environment that can be invoked and managed directly from TVM.
-This simulation environment can be used in both OSX and Linux.
-There are two dependencies required to make *TSIM* works: [Verilator](https://www.veripool.org/wiki/verilator) and [sbt](https://www.scala-sbt.org/) for accelerators designed in [Chisel3](https://github.com/freechipsproject/chisel3).
+This simulation environment can be used in both OSX and Linux. *TSIM* depends on [Verilator](https://www.veripool.org/wiki/verilator) to work.
+
+There are three accelerators designed in three languages:
+
+* Verilog
+* Chisel3 requires [sbt](https://www.scala-sbt.org/) for accelerators designed in [Chisel3](https://github.com/freechipsproject/chisel3)
+* Xilinx Vivado HLS requires [vivado](https://docs.tvm.ai/vta/install.html#vta-fpga-toolchain-installation)
 
 ## OSX Dependencies
 
@@ -61,6 +66,10 @@ https://www.veripool.org/projects/verilator/wiki/Installing
 
 ## Setup in TVM
 
-1. Install `verilator` and `sbt` as described above
+1. Install all dependencies as described above
 2. Get tvm submodule `git submodule update --init --recursive`
 3. Build [tvm](https://docs.tvm.ai/install/from_source.html#build-the-shared-library)
+4. Run examples, for example
+    * Verilog accelerator `make -C verilog/adder`
+    * Chisel3 accelerator `make -C chisel/adder`
+    * HLS accelerator `make -C vivado_hls/adder`
