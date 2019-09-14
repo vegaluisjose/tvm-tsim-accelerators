@@ -70,6 +70,6 @@ https://www.veripool.org/projects/verilator/wiki/Installing
 2. Get tvm submodule `git submodule update --init --recursive`
 3. Build [tvm](https://docs.tvm.ai/install/from_source.html#build-the-shared-library)
 4. Run examples, for example
-    * Verilog accelerator `make -C verilog/adder`
-    * Chisel3 accelerator `make -C chisel/adder`
-    * HLS accelerator `make -C vivado_hls/adder`
+    * Verilog accelerator `cd verilog/adder && make`
+    * Chisel3 accelerator `cd chisel/adder && make`
+    * HLS accelerator `cd vivado_hls/adder && make`
