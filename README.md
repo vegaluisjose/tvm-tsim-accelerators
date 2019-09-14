@@ -18,8 +18,10 @@
 TSIM
 ====
 
-*TSIM* is a cycle-accurate hardware simulation environment that can be invoked and managed directly from TVM.
-This simulation environment can be used in both OSX and Linux. *TSIM* depends on [Verilator](https://www.veripool.org/wiki/verilator) to work.
+TSIM is a cycle-accurate hardware simulation environment that can be invoked and managed directly from TVM.
+This simulation environment can be used in both OSX and Linux. 
+
+TSIM depends on [Verilator](https://www.veripool.org/wiki/verilator) to work.
 
 There are three accelerators designed in three languages:
 
@@ -27,7 +29,7 @@ There are three accelerators designed in three languages:
 * Chisel3 requires [sbt](https://www.scala-sbt.org/) for accelerators designed in [Chisel3](https://github.com/freechipsproject/chisel3)
 * Xilinx Vivado HLS requires [vivado](https://docs.tvm.ai/vta/install.html#vta-fpga-toolchain-installation)
 
-## OSX Dependencies
+## OSX
 
 Install `sbt` and `verilator` using [Homebrew](https://brew.sh/).
 
@@ -35,7 +37,7 @@ Install `sbt` and `verilator` using [Homebrew](https://brew.sh/).
 brew install verilator sbt
 ```
 
-## Linux Dependencies
+## Linux
 
 Add `sbt` to package manager (Ubuntu).
 
@@ -49,20 +51,7 @@ Install `sbt` and `verilator`.
 
 ```bash
 sudo apt install verilator sbt
-```
-
-Verilator version check
-
-```bash
-verilator --version
-```
-
-the supported version of Verilator should be at least 4.012, 
-if homebrew (OSX) or package-manager (Linux) does not support that version,
-please install Verilator 4.012 or later from binary or source base on following
-instruction of Verilator wiki.  
-
-https://www.veripool.org/projects/verilator/wiki/Installing
+``` 
 
 ## Setup in TVM
 
