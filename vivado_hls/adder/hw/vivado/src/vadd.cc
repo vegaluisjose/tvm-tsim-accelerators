@@ -34,6 +34,9 @@ Description:
     This is vector addition example to demonstrate how HLS optimizations are used in kernel.
 *******************************************************************************/
 
+#define BUFFER_SIZE 1024
+#define DATA_SIZE 4096
+
 //TRIPCOUNT indentifier
 const unsigned int c_len = DATA_SIZE / BUFFER_SIZE;
 const unsigned int c_size = BUFFER_SIZE;

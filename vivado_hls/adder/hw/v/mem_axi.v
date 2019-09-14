@@ -199,7 +199,8 @@ module mem_axi #
   assign m_axi_gmem_BUSER = 'd0;
   assign m_axi_gmem_BID = 'd0;
 
-  if (1) begin
+  // debug
+  if (0) begin
     always_ff @(posedge clock) begin
       if (m_axi_gmem_AWVALID & m_axi_gmem_ARVALID)
         $display("[mem] waddr:%x len:%d", m_axi_gmem_AWADDR, m_axi_gmem_AWLEN);

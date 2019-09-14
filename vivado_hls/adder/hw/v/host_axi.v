@@ -151,6 +151,7 @@ module host_axi #
   assign host_resp_valid = s_axi_control_RVALID;
   assign host_resp_bits = s_axi_control_RDATA;
 
+  // debug
   if (0) begin
     always_ff @(posedge clock) begin
       if (s_axi_control_AWVALID & s_axi_control_AWREADY)
