@@ -117,10 +117,10 @@ class Device {
   }
 
   void Launch(uint32_t len) {
-    dpi_->WriteReg(0x10, len);
-    dpi_->WriteReg(0x18, this->MemGetPhyAddr(a_));
-    dpi_->WriteReg(0x20, this->MemGetPhyAddr(b_));
-    dpi_->WriteReg(0x28, this->MemGetPhyAddr(c_));
+    dpi_->WriteReg(0x10, this->MemGetPhyAddr(a_));
+    dpi_->WriteReg(0x18, this->MemGetPhyAddr(b_));
+    dpi_->WriteReg(0x20, this->MemGetPhyAddr(c_));
+    dpi_->WriteReg(0x28, len);
     dpi_->WriteReg(0x00, 0x1); // launch
   }
 
@@ -135,7 +135,7 @@ class Device {
   }
 
   // wait cycles
-  uint32_t wait_cycles_{100};
+  uint32_t wait_cycles_{100000};
   // DPI loader
   DPILoader* loader_{nullptr};
   // DPI Module

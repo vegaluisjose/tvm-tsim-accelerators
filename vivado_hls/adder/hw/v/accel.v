@@ -75,51 +75,51 @@ module accel #
   logic                               s_axi_control_BREADY;
   logic                         [1:0] s_axi_control_BRESP;
 
-  logic                               m_axi_data_AWVALID;
-  logic                               m_axi_data_AWREADY;
-  logic       [MEM_AXI_ADDR_BITS-1:0] m_axi_data_AWADDR;
-  logic         [MEM_AXI_ID_BITS-1:0] m_axi_data_AWID;
-  logic                         [7:0] m_axi_data_AWLEN;
-  logic                         [2:0] m_axi_data_AWSIZE;
-  logic                         [1:0] m_axi_data_AWBURST;
-  logic                         [1:0] m_axi_data_AWLOCK;
-  logic                         [3:0] m_axi_data_AWCACHE;
-  logic                         [2:0] m_axi_data_AWPROT;
-  logic                         [3:0] m_axi_data_AWQOS;
-  logic                         [3:0] m_axi_data_AWREGION;
-  logic       [MEM_AXI_USER_BITS-1:0] m_axi_data_AWUSER;
-  logic                               m_axi_data_WVALID;
-  logic                               m_axi_data_WREADY;
-  logic       [MEM_AXI_DATA_BITS-1:0] m_axi_data_WDATA;
-  logic       [MEM_AXI_STRB_BITS-1:0] m_axi_data_WSTRB;
-  logic                               m_axi_data_WLAST;
-  logic         [MEM_AXI_ID_BITS-1:0] m_axi_data_WID;
-  logic       [MEM_AXI_USER_BITS-1:0] m_axi_data_WUSER;
-  logic                               m_axi_data_ARVALID;
-  logic                               m_axi_data_ARREADY;
-  logic       [MEM_AXI_ADDR_BITS-1:0] m_axi_data_ARADDR;
-  logic         [MEM_AXI_ID_BITS-1:0] m_axi_data_ARID;
-  logic                         [7:0] m_axi_data_ARLEN;
-  logic                         [2:0] m_axi_data_ARSIZE;
-  logic                         [1:0] m_axi_data_ARBURST;
-  logic                         [1:0] m_axi_data_ARLOCK;
-  logic                         [3:0] m_axi_data_ARCACHE;
-  logic                         [2:0] m_axi_data_ARPROT;
-  logic                         [3:0] m_axi_data_ARQOS;
-  logic                         [3:0] m_axi_data_ARREGION;
-  logic       [MEM_AXI_USER_BITS-1:0] m_axi_data_ARUSER;
-  logic                               m_axi_data_RVALID;
-  logic                               m_axi_data_RREADY;
-  logic       [MEM_AXI_DATA_BITS-1:0] m_axi_data_RDATA;
-  logic                               m_axi_data_RLAST;
-  logic         [MEM_AXI_ID_BITS-1:0] m_axi_data_RID;
-  logic       [MEM_AXI_USER_BITS-1:0] m_axi_data_RUSER;
-  logic                         [1:0] m_axi_data_RRESP;
-  logic                               m_axi_data_BVALID;
-  logic                               m_axi_data_BREADY;
-  logic                         [1:0] m_axi_data_BRESP;
-  logic         [MEM_AXI_ID_BITS-1:0] m_axi_data_BID;
-  logic       [MEM_AXI_USER_BITS-1:0] m_axi_data_BUSER;
+  logic                               m_axi_gmem_AWVALID;
+  logic                               m_axi_gmem_AWREADY;
+  logic       [MEM_AXI_ADDR_BITS-1:0] m_axi_gmem_AWADDR;
+  logic         [MEM_AXI_ID_BITS-1:0] m_axi_gmem_AWID;
+  logic                         [7:0] m_axi_gmem_AWLEN;
+  logic                         [2:0] m_axi_gmem_AWSIZE;
+  logic                         [1:0] m_axi_gmem_AWBURST;
+  logic                         [1:0] m_axi_gmem_AWLOCK;
+  logic                         [3:0] m_axi_gmem_AWCACHE;
+  logic                         [2:0] m_axi_gmem_AWPROT;
+  logic                         [3:0] m_axi_gmem_AWQOS;
+  logic                         [3:0] m_axi_gmem_AWREGION;
+  logic       [MEM_AXI_USER_BITS-1:0] m_axi_gmem_AWUSER;
+  logic                               m_axi_gmem_WVALID;
+  logic                               m_axi_gmem_WREADY;
+  logic       [MEM_AXI_DATA_BITS-1:0] m_axi_gmem_WDATA;
+  logic       [MEM_AXI_STRB_BITS-1:0] m_axi_gmem_WSTRB;
+  logic                               m_axi_gmem_WLAST;
+  logic         [MEM_AXI_ID_BITS-1:0] m_axi_gmem_WID;
+  logic       [MEM_AXI_USER_BITS-1:0] m_axi_gmem_WUSER;
+  logic                               m_axi_gmem_ARVALID;
+  logic                               m_axi_gmem_ARREADY;
+  logic       [MEM_AXI_ADDR_BITS-1:0] m_axi_gmem_ARADDR;
+  logic         [MEM_AXI_ID_BITS-1:0] m_axi_gmem_ARID;
+  logic                         [7:0] m_axi_gmem_ARLEN;
+  logic                         [2:0] m_axi_gmem_ARSIZE;
+  logic                         [1:0] m_axi_gmem_ARBURST;
+  logic                         [1:0] m_axi_gmem_ARLOCK;
+  logic                         [3:0] m_axi_gmem_ARCACHE;
+  logic                         [2:0] m_axi_gmem_ARPROT;
+  logic                         [3:0] m_axi_gmem_ARQOS;
+  logic                         [3:0] m_axi_gmem_ARREGION;
+  logic       [MEM_AXI_USER_BITS-1:0] m_axi_gmem_ARUSER;
+  logic                               m_axi_gmem_RVALID;
+  logic                               m_axi_gmem_RREADY;
+  logic       [MEM_AXI_DATA_BITS-1:0] m_axi_gmem_RDATA;
+  logic                               m_axi_gmem_RLAST;
+  logic         [MEM_AXI_ID_BITS-1:0] m_axi_gmem_RID;
+  logic       [MEM_AXI_USER_BITS-1:0] m_axi_gmem_RUSER;
+  logic                         [1:0] m_axi_gmem_RRESP;
+  logic                               m_axi_gmem_BVALID;
+  logic                               m_axi_gmem_BREADY;
+  logic                         [1:0] m_axi_gmem_BRESP;
+  logic         [MEM_AXI_ID_BITS-1:0] m_axi_gmem_BID;
+  logic       [MEM_AXI_USER_BITS-1:0] m_axi_gmem_BUSER;
 
   host_axi #
   (
@@ -186,54 +186,54 @@ module accel #
     .mem_rd_bits             (mem_rd_bits),
     .mem_rd_ready            (mem_rd_ready),
 
-    .m_axi_data_AWVALID      (m_axi_data_AWVALID),
-    .m_axi_data_AWREADY      (m_axi_data_AWREADY),
-    .m_axi_data_AWADDR       (m_axi_data_AWADDR),
-    .m_axi_data_AWID         (m_axi_data_AWID),
-    .m_axi_data_AWLEN        (m_axi_data_AWLEN),
-    .m_axi_data_AWSIZE       (m_axi_data_AWSIZE),
-    .m_axi_data_AWBURST      (m_axi_data_AWBURST),
-    .m_axi_data_AWLOCK       (m_axi_data_AWLOCK),
-    .m_axi_data_AWCACHE      (m_axi_data_AWCACHE),
-    .m_axi_data_AWPROT       (m_axi_data_AWPROT),
-    .m_axi_data_AWQOS        (m_axi_data_AWQOS),
-    .m_axi_data_AWREGION     (m_axi_data_AWREGION),
-    .m_axi_data_AWUSER       (m_axi_data_AWUSER),
-    .m_axi_data_WVALID       (m_axi_data_WVALID),
-    .m_axi_data_WREADY       (m_axi_data_WREADY),
-    .m_axi_data_WDATA        (m_axi_data_WDATA),
-    .m_axi_data_WSTRB        (m_axi_data_WSTRB),
-    .m_axi_data_WLAST        (m_axi_data_WLAST),
-    .m_axi_data_WID          (m_axi_data_WID),
-    .m_axi_data_WUSER        (m_axi_data_WUSER),
-    .m_axi_data_ARVALID      (m_axi_data_ARVALID),
-    .m_axi_data_ARREADY      (m_axi_data_ARREADY),
-    .m_axi_data_ARADDR       (m_axi_data_ARADDR),
-    .m_axi_data_ARID         (m_axi_data_ARID),
-    .m_axi_data_ARLEN        (m_axi_data_ARLEN),
-    .m_axi_data_ARSIZE       (m_axi_data_ARSIZE),
-    .m_axi_data_ARBURST      (m_axi_data_ARBURST),
-    .m_axi_data_ARLOCK       (m_axi_data_ARLOCK),
-    .m_axi_data_ARCACHE      (m_axi_data_ARCACHE),
-    .m_axi_data_ARPROT       (m_axi_data_ARPROT),
-    .m_axi_data_ARQOS        (m_axi_data_ARQOS),
-    .m_axi_data_ARREGION     (m_axi_data_ARREGION),
-    .m_axi_data_ARUSER       (m_axi_data_ARUSER),
-    .m_axi_data_RVALID       (m_axi_data_RVALID),
-    .m_axi_data_RREADY       (m_axi_data_RREADY),
-    .m_axi_data_RDATA        (m_axi_data_RDATA),
-    .m_axi_data_RLAST        (m_axi_data_RLAST),
-    .m_axi_data_RID          (m_axi_data_RID),
-    .m_axi_data_RUSER        (m_axi_data_RUSER),
-    .m_axi_data_RRESP        (m_axi_data_RRESP),
-    .m_axi_data_BVALID       (m_axi_data_BVALID),
-    .m_axi_data_BREADY       (m_axi_data_BREADY),
-    .m_axi_data_BRESP        (m_axi_data_BRESP),
-    .m_axi_data_BID          (m_axi_data_BID),
-    .m_axi_data_BUSER        (m_axi_data_BUSER)
+    .m_axi_gmem_AWVALID      (m_axi_gmem_AWVALID),
+    .m_axi_gmem_AWREADY      (m_axi_gmem_AWREADY),
+    .m_axi_gmem_AWADDR       (m_axi_gmem_AWADDR),
+    .m_axi_gmem_AWID         (m_axi_gmem_AWID),
+    .m_axi_gmem_AWLEN        (m_axi_gmem_AWLEN),
+    .m_axi_gmem_AWSIZE       (m_axi_gmem_AWSIZE),
+    .m_axi_gmem_AWBURST      (m_axi_gmem_AWBURST),
+    .m_axi_gmem_AWLOCK       (m_axi_gmem_AWLOCK),
+    .m_axi_gmem_AWCACHE      (m_axi_gmem_AWCACHE),
+    .m_axi_gmem_AWPROT       (m_axi_gmem_AWPROT),
+    .m_axi_gmem_AWQOS        (m_axi_gmem_AWQOS),
+    .m_axi_gmem_AWREGION     (m_axi_gmem_AWREGION),
+    .m_axi_gmem_AWUSER       (m_axi_gmem_AWUSER),
+    .m_axi_gmem_WVALID       (m_axi_gmem_WVALID),
+    .m_axi_gmem_WREADY       (m_axi_gmem_WREADY),
+    .m_axi_gmem_WDATA        (m_axi_gmem_WDATA),
+    .m_axi_gmem_WSTRB        (m_axi_gmem_WSTRB),
+    .m_axi_gmem_WLAST        (m_axi_gmem_WLAST),
+    .m_axi_gmem_WID          (m_axi_gmem_WID),
+    .m_axi_gmem_WUSER        (m_axi_gmem_WUSER),
+    .m_axi_gmem_ARVALID      (m_axi_gmem_ARVALID),
+    .m_axi_gmem_ARREADY      (m_axi_gmem_ARREADY),
+    .m_axi_gmem_ARADDR       (m_axi_gmem_ARADDR),
+    .m_axi_gmem_ARID         (m_axi_gmem_ARID),
+    .m_axi_gmem_ARLEN        (m_axi_gmem_ARLEN),
+    .m_axi_gmem_ARSIZE       (m_axi_gmem_ARSIZE),
+    .m_axi_gmem_ARBURST      (m_axi_gmem_ARBURST),
+    .m_axi_gmem_ARLOCK       (m_axi_gmem_ARLOCK),
+    .m_axi_gmem_ARCACHE      (m_axi_gmem_ARCACHE),
+    .m_axi_gmem_ARPROT       (m_axi_gmem_ARPROT),
+    .m_axi_gmem_ARQOS        (m_axi_gmem_ARQOS),
+    .m_axi_gmem_ARREGION     (m_axi_gmem_ARREGION),
+    .m_axi_gmem_ARUSER       (m_axi_gmem_ARUSER),
+    .m_axi_gmem_RVALID       (m_axi_gmem_RVALID),
+    .m_axi_gmem_RREADY       (m_axi_gmem_RREADY),
+    .m_axi_gmem_RDATA        (m_axi_gmem_RDATA),
+    .m_axi_gmem_RLAST        (m_axi_gmem_RLAST),
+    .m_axi_gmem_RID          (m_axi_gmem_RID),
+    .m_axi_gmem_RUSER        (m_axi_gmem_RUSER),
+    .m_axi_gmem_RRESP        (m_axi_gmem_RRESP),
+    .m_axi_gmem_BVALID       (m_axi_gmem_BVALID),
+    .m_axi_gmem_BREADY       (m_axi_gmem_BREADY),
+    .m_axi_gmem_BRESP        (m_axi_gmem_BRESP),
+    .m_axi_gmem_BID          (m_axi_gmem_BID),
+    .m_axi_gmem_BUSER        (m_axi_gmem_BUSER)
   );
 
-  adder #
+  vadd #
   (
     .C_S_AXI_DATA_WIDTH(64)
   )
@@ -259,51 +259,51 @@ module accel #
     .s_axi_control_BREADY    (s_axi_control_BREADY),
     .s_axi_control_BRESP     (s_axi_control_BRESP),
 
-    .m_axi_data_AWVALID      (m_axi_data_AWVALID),
-    .m_axi_data_AWREADY      (m_axi_data_AWREADY),
-    .m_axi_data_AWADDR       (m_axi_data_AWADDR),
-    .m_axi_data_AWID         (m_axi_data_AWID),
-    .m_axi_data_AWLEN        (m_axi_data_AWLEN),
-    .m_axi_data_AWSIZE       (m_axi_data_AWSIZE),
-    .m_axi_data_AWBURST      (m_axi_data_AWBURST),
-    .m_axi_data_AWLOCK       (m_axi_data_AWLOCK),
-    .m_axi_data_AWCACHE      (m_axi_data_AWCACHE),
-    .m_axi_data_AWPROT       (m_axi_data_AWPROT),
-    .m_axi_data_AWQOS        (m_axi_data_AWQOS),
-    .m_axi_data_AWREGION     (m_axi_data_AWREGION),
-    .m_axi_data_AWUSER       (m_axi_data_AWUSER),
-    .m_axi_data_WVALID       (m_axi_data_WVALID),
-    .m_axi_data_WREADY       (m_axi_data_WREADY),
-    .m_axi_data_WDATA        (m_axi_data_WDATA),
-    .m_axi_data_WSTRB        (m_axi_data_WSTRB),
-    .m_axi_data_WLAST        (m_axi_data_WLAST),
-    .m_axi_data_WID          (m_axi_data_WID),
-    .m_axi_data_WUSER        (m_axi_data_WUSER),
-    .m_axi_data_ARVALID      (m_axi_data_ARVALID),
-    .m_axi_data_ARREADY      (m_axi_data_ARREADY),
-    .m_axi_data_ARADDR       (m_axi_data_ARADDR),
-    .m_axi_data_ARID         (m_axi_data_ARID),
-    .m_axi_data_ARLEN        (m_axi_data_ARLEN),
-    .m_axi_data_ARSIZE       (m_axi_data_ARSIZE),
-    .m_axi_data_ARBURST      (m_axi_data_ARBURST),
-    .m_axi_data_ARLOCK       (m_axi_data_ARLOCK),
-    .m_axi_data_ARCACHE      (m_axi_data_ARCACHE),
-    .m_axi_data_ARPROT       (m_axi_data_ARPROT),
-    .m_axi_data_ARQOS        (m_axi_data_ARQOS),
-    .m_axi_data_ARREGION     (m_axi_data_ARREGION),
-    .m_axi_data_ARUSER       (m_axi_data_ARUSER),
-    .m_axi_data_RVALID       (m_axi_data_RVALID),
-    .m_axi_data_RREADY       (m_axi_data_RREADY),
-    .m_axi_data_RDATA        (m_axi_data_RDATA),
-    .m_axi_data_RLAST        (m_axi_data_RLAST),
-    .m_axi_data_RID          (m_axi_data_RID),
-    .m_axi_data_RUSER        (m_axi_data_RUSER),
-    .m_axi_data_RRESP        (m_axi_data_RRESP),
-    .m_axi_data_BVALID       (m_axi_data_BVALID),
-    .m_axi_data_BREADY       (m_axi_data_BREADY),
-    .m_axi_data_BRESP        (m_axi_data_BRESP),
-    .m_axi_data_BID          (m_axi_data_BID),
-    .m_axi_data_BUSER        (m_axi_data_BUSER)
+    .m_axi_gmem_AWVALID      (m_axi_gmem_AWVALID),
+    .m_axi_gmem_AWREADY      (m_axi_gmem_AWREADY),
+    .m_axi_gmem_AWADDR       (m_axi_gmem_AWADDR),
+    .m_axi_gmem_AWID         (m_axi_gmem_AWID),
+    .m_axi_gmem_AWLEN        (m_axi_gmem_AWLEN),
+    .m_axi_gmem_AWSIZE       (m_axi_gmem_AWSIZE),
+    .m_axi_gmem_AWBURST      (m_axi_gmem_AWBURST),
+    .m_axi_gmem_AWLOCK       (m_axi_gmem_AWLOCK),
+    .m_axi_gmem_AWCACHE      (m_axi_gmem_AWCACHE),
+    .m_axi_gmem_AWPROT       (m_axi_gmem_AWPROT),
+    .m_axi_gmem_AWQOS        (m_axi_gmem_AWQOS),
+    .m_axi_gmem_AWREGION     (m_axi_gmem_AWREGION),
+    .m_axi_gmem_AWUSER       (m_axi_gmem_AWUSER),
+    .m_axi_gmem_WVALID       (m_axi_gmem_WVALID),
+    .m_axi_gmem_WREADY       (m_axi_gmem_WREADY),
+    .m_axi_gmem_WDATA        (m_axi_gmem_WDATA),
+    .m_axi_gmem_WSTRB        (m_axi_gmem_WSTRB),
+    .m_axi_gmem_WLAST        (m_axi_gmem_WLAST),
+    .m_axi_gmem_WID          (m_axi_gmem_WID),
+    .m_axi_gmem_WUSER        (m_axi_gmem_WUSER),
+    .m_axi_gmem_ARVALID      (m_axi_gmem_ARVALID),
+    .m_axi_gmem_ARREADY      (m_axi_gmem_ARREADY),
+    .m_axi_gmem_ARADDR       (m_axi_gmem_ARADDR),
+    .m_axi_gmem_ARID         (m_axi_gmem_ARID),
+    .m_axi_gmem_ARLEN        (m_axi_gmem_ARLEN),
+    .m_axi_gmem_ARSIZE       (m_axi_gmem_ARSIZE),
+    .m_axi_gmem_ARBURST      (m_axi_gmem_ARBURST),
+    .m_axi_gmem_ARLOCK       (m_axi_gmem_ARLOCK),
+    .m_axi_gmem_ARCACHE      (m_axi_gmem_ARCACHE),
+    .m_axi_gmem_ARPROT       (m_axi_gmem_ARPROT),
+    .m_axi_gmem_ARQOS        (m_axi_gmem_ARQOS),
+    .m_axi_gmem_ARREGION     (m_axi_gmem_ARREGION),
+    .m_axi_gmem_ARUSER       (m_axi_gmem_ARUSER),
+    .m_axi_gmem_RVALID       (m_axi_gmem_RVALID),
+    .m_axi_gmem_RREADY       (m_axi_gmem_RREADY),
+    .m_axi_gmem_RDATA        (m_axi_gmem_RDATA),
+    .m_axi_gmem_RLAST        (m_axi_gmem_RLAST),
+    .m_axi_gmem_RID          (m_axi_gmem_RID),
+    .m_axi_gmem_RUSER        (m_axi_gmem_RUSER),
+    .m_axi_gmem_RRESP        (m_axi_gmem_RRESP),
+    .m_axi_gmem_BVALID       (m_axi_gmem_BVALID),
+    .m_axi_gmem_BREADY       (m_axi_gmem_BREADY),
+    .m_axi_gmem_BRESP        (m_axi_gmem_BRESP),
+    .m_axi_gmem_BID          (m_axi_gmem_BID),
+    .m_axi_gmem_BUSER        (m_axi_gmem_BUSER)
   );
 
 endmodule

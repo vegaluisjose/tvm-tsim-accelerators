@@ -21,7 +21,7 @@ import tsim
 
 def test_accel():
     rmax = 64
-    dtype = "uint8"
+    dtype = "uint64"
     # n = np.random.randint(1, rmax)
     n = 8
     ctx = tvm.cpu(0)
@@ -32,6 +32,7 @@ def test_accel():
     f(a, b, c)
     print(a.asnumpy())
     print(b.asnumpy())
+    print(c.asnumpy())
     # msg = "cycles:{0:4} n:{1:2}".format(cycles, n, c)
     # np.testing.assert_equal(c.asnumpy(), a.asnumpy() + b.asnumpy(), err_msg = "[FAIL] " + msg)
     # print("[PASS] " + msg)

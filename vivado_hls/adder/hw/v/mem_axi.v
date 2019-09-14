@@ -42,51 +42,51 @@ module mem_axi #
   input      [MEM_DATA_BITS-1:0] mem_rd_bits,
   output                         mem_rd_ready,
 
-  input                          m_axi_data_AWVALID,
-  output                         m_axi_data_AWREADY,
-  input  [MEM_AXI_ADDR_BITS-1:0] m_axi_data_AWADDR,
-  input    [MEM_AXI_ID_BITS-1:0] m_axi_data_AWID,
-  input                    [7:0] m_axi_data_AWLEN,
-  input                    [2:0] m_axi_data_AWSIZE,
-  input                    [1:0] m_axi_data_AWBURST,
-  input                    [1:0] m_axi_data_AWLOCK,
-  input                    [3:0] m_axi_data_AWCACHE,
-  input                    [2:0] m_axi_data_AWPROT,
-  input                    [3:0] m_axi_data_AWQOS,
-  input                    [3:0] m_axi_data_AWREGION,
-  input  [MEM_AXI_USER_BITS-1:0] m_axi_data_AWUSER,
-  input                          m_axi_data_WVALID,
-  output                         m_axi_data_WREADY,
-  input  [MEM_AXI_DATA_BITS-1:0] m_axi_data_WDATA,
-  input  [MEM_AXI_STRB_BITS-1:0] m_axi_data_WSTRB,
-  input                          m_axi_data_WLAST,
-  input    [MEM_AXI_ID_BITS-1:0] m_axi_data_WID,
-  input  [MEM_AXI_USER_BITS-1:0] m_axi_data_WUSER,
-  input                          m_axi_data_ARVALID,
-  output                         m_axi_data_ARREADY,
-  input  [MEM_AXI_ADDR_BITS-1:0] m_axi_data_ARADDR,
-  input    [MEM_AXI_ID_BITS-1:0] m_axi_data_ARID,
-  input                    [7:0] m_axi_data_ARLEN,
-  input                    [2:0] m_axi_data_ARSIZE,
-  input                    [1:0] m_axi_data_ARBURST,
-  input                    [1:0] m_axi_data_ARLOCK,
-  input                    [3:0] m_axi_data_ARCACHE,
-  input                    [2:0] m_axi_data_ARPROT,
-  input                    [3:0] m_axi_data_ARQOS,
-  input                    [3:0] m_axi_data_ARREGION,
-  input  [MEM_AXI_USER_BITS-1:0] m_axi_data_ARUSER,
-  output                         m_axi_data_RVALID,
-  input                          m_axi_data_RREADY,
-  output [MEM_AXI_DATA_BITS-1:0] m_axi_data_RDATA,
-  output                         m_axi_data_RLAST,
-  output   [MEM_AXI_ID_BITS-1:0] m_axi_data_RID,
-  output [MEM_AXI_USER_BITS-1:0] m_axi_data_RUSER,
-  output                   [1:0] m_axi_data_RRESP,
-  output                         m_axi_data_BVALID,
-  input                          m_axi_data_BREADY,
-  output                   [1:0] m_axi_data_BRESP,
-  output   [MEM_AXI_ID_BITS-1:0] m_axi_data_BID,
-  output [MEM_AXI_USER_BITS-1:0] m_axi_data_BUSER
+  input                          m_axi_gmem_AWVALID,
+  output                         m_axi_gmem_AWREADY,
+  input  [MEM_AXI_ADDR_BITS-1:0] m_axi_gmem_AWADDR,
+  input    [MEM_AXI_ID_BITS-1:0] m_axi_gmem_AWID,
+  input                    [7:0] m_axi_gmem_AWLEN,
+  input                    [2:0] m_axi_gmem_AWSIZE,
+  input                    [1:0] m_axi_gmem_AWBURST,
+  input                    [1:0] m_axi_gmem_AWLOCK,
+  input                    [3:0] m_axi_gmem_AWCACHE,
+  input                    [2:0] m_axi_gmem_AWPROT,
+  input                    [3:0] m_axi_gmem_AWQOS,
+  input                    [3:0] m_axi_gmem_AWREGION,
+  input  [MEM_AXI_USER_BITS-1:0] m_axi_gmem_AWUSER,
+  input                          m_axi_gmem_WVALID,
+  output                         m_axi_gmem_WREADY,
+  input  [MEM_AXI_DATA_BITS-1:0] m_axi_gmem_WDATA,
+  input  [MEM_AXI_STRB_BITS-1:0] m_axi_gmem_WSTRB,
+  input                          m_axi_gmem_WLAST,
+  input    [MEM_AXI_ID_BITS-1:0] m_axi_gmem_WID,
+  input  [MEM_AXI_USER_BITS-1:0] m_axi_gmem_WUSER,
+  input                          m_axi_gmem_ARVALID,
+  output                         m_axi_gmem_ARREADY,
+  input  [MEM_AXI_ADDR_BITS-1:0] m_axi_gmem_ARADDR,
+  input    [MEM_AXI_ID_BITS-1:0] m_axi_gmem_ARID,
+  input                    [7:0] m_axi_gmem_ARLEN,
+  input                    [2:0] m_axi_gmem_ARSIZE,
+  input                    [1:0] m_axi_gmem_ARBURST,
+  input                    [1:0] m_axi_gmem_ARLOCK,
+  input                    [3:0] m_axi_gmem_ARCACHE,
+  input                    [2:0] m_axi_gmem_ARPROT,
+  input                    [3:0] m_axi_gmem_ARQOS,
+  input                    [3:0] m_axi_gmem_ARREGION,
+  input  [MEM_AXI_USER_BITS-1:0] m_axi_gmem_ARUSER,
+  output                         m_axi_gmem_RVALID,
+  input                          m_axi_gmem_RREADY,
+  output [MEM_AXI_DATA_BITS-1:0] m_axi_gmem_RDATA,
+  output                         m_axi_gmem_RLAST,
+  output   [MEM_AXI_ID_BITS-1:0] m_axi_gmem_RID,
+  output [MEM_AXI_USER_BITS-1:0] m_axi_gmem_RUSER,
+  output                   [1:0] m_axi_gmem_RRESP,
+  output                         m_axi_gmem_BVALID,
+  input                          m_axi_gmem_BREADY,
+  output                   [1:0] m_axi_gmem_BRESP,
+  output   [MEM_AXI_ID_BITS-1:0] m_axi_gmem_BID,
+  output [MEM_AXI_USER_BITS-1:0] m_axi_gmem_BUSER
 );
 
   // this is a timeout counter needed because the hls generated
@@ -117,25 +117,23 @@ module mem_axi #
 
       IDLE: begin
         // $display("IDLE");
-        if (m_axi_data_ARVALID)
+        if (m_axi_gmem_ARVALID)
           state_n = READ_DATA;
-        else if (m_axi_data_AWVALID)
+        else if (m_axi_gmem_AWVALID)
           state_n = WRITE_DATA;
         else
           state_n = IDLE;
       end
 
       READ_DATA: begin
-        // $display("READ_DATA");
-        if (m_axi_data_RREADY & mem_rd_valid & len == 'd0)
+        if (m_axi_gmem_RREADY & mem_rd_valid & len == 'd0)
           state_n = IDLE;
         else
           state_n = READ_DATA;
       end
 
       WRITE_DATA: begin
-        // $display("WRITE_DATA");
-        if (m_axi_data_WVALID & m_axi_data_WLAST)
+        if (m_axi_gmem_WVALID & m_axi_gmem_WLAST)
           state_n = WRITE_ACK;
         else if (timeout_cnt == TIMEOUT)
           state_n = IDLE;
@@ -144,8 +142,7 @@ module mem_axi #
       end
 
       WRITE_ACK: begin
-        // $display("WRITE_ACK");
-        if (m_axi_data_BREADY)
+        if (m_axi_gmem_BREADY)
           state_n = IDLE;
         else
           state_n = WRITE_ACK;
@@ -159,53 +156,59 @@ module mem_axi #
   always_ff @(posedge clock)
     if (state_r == IDLE)
       timeout_cnt <= 'd0;
-    else if (state_r == WRITE_DATA & ~m_axi_data_WVALID)
+    else if (state_r == WRITE_DATA & ~m_axi_gmem_WVALID)
       timeout_cnt <= timeout_cnt + 1'b1;
 
   always_ff @(posedge clock)
     if (reset)
       len <= 'd0;
+    else if ((state_r == IDLE) & m_axi_gmem_ARVALID)
+      len <= m_axi_gmem_ARLEN;
+    else if  ((state_r == IDLE) & m_axi_gmem_AWVALID)
+      len <= m_axi_gmem_AWLEN;
     else if ((state_r == READ_DATA)
-            & m_axi_data_RREADY
+            & m_axi_gmem_RREADY
             & mem_rd_valid
             & len != 'd0)
       len <= len - 'd1;
 
-  assign mem_req_valid = ((state_r == IDLE) & m_axi_data_ARVALID)
-                       | ((state_r == IDLE) & m_axi_data_AWVALID);
+  assign mem_req_valid = ((state_r == IDLE) & m_axi_gmem_ARVALID)
+                       | ((state_r == IDLE) & m_axi_gmem_AWVALID);
 
-  assign mem_req_opcode = ~m_axi_data_ARVALID;
-  assign mem_req_len = m_axi_data_ARVALID? m_axi_data_ARLEN : m_axi_data_AWLEN;
-  assign mem_req_addr = m_axi_data_ARVALID? m_axi_data_ARADDR : m_axi_data_AWADDR;
+  assign mem_req_opcode = ~m_axi_gmem_ARVALID;
+  assign mem_req_len = m_axi_gmem_ARVALID? m_axi_gmem_ARLEN : m_axi_gmem_AWLEN;
+  assign mem_req_addr = m_axi_gmem_ARVALID? m_axi_gmem_ARADDR : m_axi_gmem_AWADDR;
 
-  assign m_axi_data_ARREADY = state_r == IDLE;
-  assign m_axi_data_AWREADY = state_r == IDLE;
+  assign m_axi_gmem_ARREADY = state_r == IDLE;
+  assign m_axi_gmem_AWREADY = state_r == IDLE;
 
-  assign m_axi_data_RVALID = (state_r == READ_DATA) & mem_rd_valid;
-  assign m_axi_data_RDATA = mem_rd_bits;
-  assign m_axi_data_RLAST = len == 'd0;
-  assign m_axi_data_RRESP = 'd0;
-  assign m_axi_data_RUSER = 'd0;
-  assign m_axi_data_RID = 'd0;
+  assign m_axi_gmem_RVALID = (state_r == READ_DATA) & mem_rd_valid;
+  assign m_axi_gmem_RDATA = mem_rd_bits;
+  assign m_axi_gmem_RLAST = len == 'd0;
+  assign m_axi_gmem_RRESP = 'd0;
+  assign m_axi_gmem_RUSER = 'd0;
+  assign m_axi_gmem_RID = 'd0;
 
-  assign mem_rd_ready = (state_r == READ_DATA) & m_axi_data_RREADY;
-  assign mem_wr_valid = (state_r == WRITE_DATA) & m_axi_data_WVALID;
-  assign mem_wr_bits = m_axi_data_WDATA;
-  assign m_axi_data_WREADY = state_r == WRITE_DATA;
+  assign mem_rd_ready = (state_r == READ_DATA) & m_axi_gmem_RREADY;
+  assign mem_wr_valid = (state_r == WRITE_DATA) & m_axi_gmem_WVALID;
+  assign mem_wr_bits = m_axi_gmem_WDATA;
+  assign m_axi_gmem_WREADY = state_r == WRITE_DATA;
 
-  assign m_axi_data_BVALID = state_r == WRITE_ACK;
-  assign m_axi_data_BRESP = 'd0;
-  assign m_axi_data_BUSER = 'd0;
-  assign m_axi_data_BID = 'd0;
+  assign m_axi_gmem_BVALID = state_r == WRITE_ACK;
+  assign m_axi_gmem_BRESP = 'd0;
+  assign m_axi_gmem_BUSER = 'd0;
+  assign m_axi_gmem_BID = 'd0;
 
   if (1) begin
     always_ff @(posedge clock) begin
-      if (m_axi_data_AWVALID)
-        $display("[mem] waddr:%x len:%d", m_axi_data_AWADDR, m_axi_data_AWLEN);
-      if (m_axi_data_ARVALID & m_axi_data_ARREADY)
-        $display("[mem] raddr:%x len:%d", m_axi_data_ARADDR, m_axi_data_ARLEN);
-      if (m_axi_data_RVALID & m_axi_data_RREADY)
-        $display("[mem] rdata:%x", m_axi_data_RDATA);
+      if (m_axi_gmem_AWVALID & m_axi_gmem_ARVALID)
+        $display("[mem] waddr:%x len:%d", m_axi_gmem_AWADDR, m_axi_gmem_AWLEN);
+      if (m_axi_gmem_ARVALID & m_axi_gmem_ARREADY)
+        $display("[mem] raddr:%x len:%d", m_axi_gmem_ARADDR, m_axi_gmem_ARLEN);
+      if (m_axi_gmem_RVALID & m_axi_gmem_RREADY)
+        $display("[mem] rdata:%x", m_axi_gmem_RDATA);
+      if (m_axi_gmem_WVALID & m_axi_gmem_WREADY)
+        $display("[mem] wdata:%x wstrb:%x", m_axi_gmem_WDATA, m_axi_gmem_WSTRB);
     end
   end
 
