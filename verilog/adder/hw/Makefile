@@ -75,7 +75,7 @@ cxx_files += $(VERILATOR_INC_DIR)/verilated_dpi.cpp
 cxx_files += $(wildcard $(build_dir)/*.cpp)
 cxx_files += $(vta_dir)/hardware/dpi/tsim_device.cc
 
-v_files = $(wildcard $(abspath .)/src/*.v $(vta_dir)/hardware/chisel/src/main/resources/verilog/*.v)
+v_files = $(wildcard $(abspath .)/src/*.sv $(vta_dir)/hardware/chisel/src/main/resources/verilog/*.v)
 
 ifneq ($(USE_TRACE), 0)
   verilator_opt += --trace
