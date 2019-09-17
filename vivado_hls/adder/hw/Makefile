@@ -78,7 +78,7 @@ cxx_files += $(VERILATOR_INC_DIR)/verilated_dpi.cpp
 cxx_files += $(wildcard $(build_dir)/*.cpp)
 cxx_files += $(vta_dir)/hardware/dpi/tsim_device.cc
 
-v_files = $(wildcard $(abspath .)/v/*.v)
+v_files = $(wildcard $(abspath .)/sv/*.sv)
 v_files += $(wildcard $(vta_dir)/hardware/chisel/src/main/resources/verilog/*.v)
 v_files += $(abspath .)/vivado/build/vadd/soln/impl/verilog/vadd_control_s_axi.v
 v_files += $(abspath .)/vivado/build/vadd/soln/impl/verilog/vadd_gmem_m_axi.v
