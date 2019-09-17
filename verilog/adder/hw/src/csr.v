@@ -68,102 +68,90 @@ module csr #
   localparam NUM_REG = 8;
 
   typedef enum logic {IDLE, READ} state_t;
-  state_t state_n, state_r;
+  state_t nstate, cstate;
 
-  always_ff @(posedge clock) begin
-    if (reset) begin
-      state_r <= IDLE;
-    end else begin
-      state_r <= state_n;
-    end
-  end
+  always_ff @(posedge clock)
+    if (reset)
+      cstate <= IDLE;
+    else
+      cstate <= nstate;
 
   always_comb begin
-    state_n = IDLE;
-    case (state_r)
+    nstate = cstate;
+    case (cstate)
       IDLE: begin
-        if (host_req_valid & ~host_req_opcode) begin
-          state_n = READ;
-        end
+        if (host_req_valid & ~host_req_opcode)
+          nstate = READ;
       end
 
       READ: begin
-        state_n = IDLE;
+        nstate = IDLE;
       end
     endcase
   end
 
-  assign host_req_deq = (state_r == IDLE) ? host_req_valid : 1'b0;
+  assign host_req_deq = (cstate == IDLE) ? host_req_valid : 1'b0;
 
   logic [HOST_DATA_BITS-1:0] rf [NUM_REG-1:0];
 
   genvar i;
   for (i = 0; i < NUM_REG; i++) begin
 
-    logic wen = (state_r == IDLE)? host_req_valid & host_req_opcode & i*4 == host_req_addr : 1'b0;
+    logic wen = (cstate == IDLE)? host_req_valid & host_req_opcode & i*4 == host_req_addr : 1'b0;
 
     if (i == 0) begin
 
-      always_ff @(posedge clock) begin
-        if (reset) begin
+      always_ff @(posedge clock)
+        if (reset)
           rf[i] <= 'd0;
-        end else if (finish) begin
+        else if (finish)
           rf[i] <= 'd2;
-        end else if (wen) begin
+        else if (wen)
           rf[i] <= host_req_value;
-        end
-      end
 
     end else if (i == 1) begin
 
-      always_ff @(posedge clock) begin
-        if (reset) begin
+      always_ff @(posedge clock)
+        if (reset)
           rf[i] <= 'd0;
-        end else if (event_counter_valid) begin
+        else if (event_counter_valid)
           rf[i] <= event_counter_value;
-        end else if (wen) begin
+        else if (wen)
           rf[i] <= host_req_value;
-        end
-      end
 
     end else begin
 
-      always_ff @(posedge clock) begin
-        if (reset) begin
+      always_ff @(posedge clock)
+        if (reset)
           rf[i] <= 'd0;
-        end else if (wen) begin
+        else if (wen)
           rf[i] <= host_req_value;
-        end
-      end
 
     end
 
   end
 
   logic [HOST_DATA_BITS-1:0] rdata;
-  always_ff @(posedge clock) begin
-    if (reset) begin
+  always_ff @(posedge clock)
+    if (reset)
       rdata <= 'd0;
-    end else if ((state_r == IDLE) & host_req_valid & ~host_req_opcode) begin
-      if (host_req_addr == 'h00) begin
+    else if ((cstate == IDLE) & host_req_valid & ~host_req_opcode)
+      if (host_req_addr == 'h00)
         rdata <= rf[0];
-      end else if (host_req_addr == 'h04) begin
+      else if (host_req_addr == 'h04)
         rdata <= rf[1];
-      end else if (host_req_addr == 'h08) begin
+      else if (host_req_addr == 'h08)
         rdata <= rf[2];
-      end else if (host_req_addr == 'h0c) begin
+      else if (host_req_addr == 'h0c)
         rdata <= rf[3];
-      end else if (host_req_addr == 'h10) begin
+      else if (host_req_addr == 'h10)
         rdata <= rf[4];
-      end else if (host_req_addr == 'h14) begin
+      else if (host_req_addr == 'h14)
         rdata <= rf[5];
-      end else begin
+      else
         rdata <= 'd0;
-      end
-    end
-  end
 
-  assign host_resp_valid = (state_r == READ);
+  assign host_resp_valid = (cstate == READ);
   assign host_resp_bits = rdata;
 
   assign launch = rf[0][0];
