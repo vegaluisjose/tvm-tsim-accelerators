@@ -77,7 +77,7 @@ module mmu #
                             WRITE_REQ,
                             WRITE_DATA} state_t;
 
-  state_t state_n, state_r;
+  state_t nstate, cstate;
 
   logic               [31:0] cnt;
   logic                      rd_done;
@@ -85,49 +85,41 @@ module mmu #
   logic [HOST_DATA_BITS-1:0] raddr_b;
   logic [HOST_DATA_BITS-1:0] waddr_c;
 
-  always_ff @(posedge clock) begin
-    if (reset) begin
-      state_r <= IDLE;
-    end else begin
-      state_r <= state_n;
-    end
-  end
+  always_ff @(posedge clock)
+    if (reset)
+      cstate <= IDLE;
+    else
+      cstate <= nstate;
 
   always_comb begin
-    state_n = IDLE;
-    case (state_r)
+    nstate = cstate;
+    case (cstate)
       IDLE: begin
-        if (launch) begin
-          state_n = READ_REQ;
-        end
+        if (launch)
+          nstate = READ_REQ;
       end
 
       READ_REQ: begin
-        state_n = READ_DATA;
+        nstate = READ_DATA;
       end
 
       READ_DATA: begin
-        if (mem_rd_valid) begin
-          if (rd_done) begin
-            state_n = WRITE_REQ;
-          end else begin
-            state_n = READ_REQ;
-          end
-        end else begin
-          state_n = READ_DATA;
-        end
+        if (mem_rd_valid)
+          if (rd_done)
+            nstate = WRITE_REQ;
+          else
+            nstate = READ_REQ;
       end
 
       WRITE_REQ: begin
-        state_n = WRITE_DATA;
+        nstate = WRITE_DATA;
       end
 
       WRITE_DATA: begin
-        if (cnt == (length - 1'b1)) begin
-          state_n = IDLE;
-        end else begin
-          state_n = READ_REQ;
-        end
+        if (cnt == (length - 1'b1))
+          nstate = IDLE;
+        else
+          nstate = READ_REQ;
       end
 
       default: begin
@@ -135,71 +127,65 @@ module mmu #
     endcase
   end
 
-  always_ff @(posedge clock) begin
-    if (reset | state_r == IDLE | state_r == WRITE_DATA) begin
+  always_ff @(posedge clock)
+    if (reset | cstate == IDLE | cstate == WRITE_DATA)
       rd_done <= 1'b0;
-    end else if (state_r == READ_DATA & mem_rd_valid) begin
+    else if (cstate == READ_DATA & mem_rd_valid)
       rd_done <= 1'b1;
-    end
-  end
 
   logic last;
-  assign last = (state_r == WRITE_DATA) & (cnt == (length - 1'b1));
+  assign last = (cstate == WRITE_DATA) & (cnt == (length - 1'b1));
 
   // cycle counter
   logic [HOST_DATA_BITS-1:0] cycle_counter;
-  always_ff @(posedge clock) begin
-    if (reset | state_r == IDLE) begin
+  always_ff @(posedge clock)
+    if (reset | cstate == IDLE)
       cycle_counter <= '0;
-    end else begin
+    else
       cycle_counter <= cycle_counter + 'd1;
-    end
-  end
 
   assign event_counter_valid = last;
   assign event_counter_value = cycle_counter;
 
   // calculate next address
-  always_ff @(posedge clock) begin
-    if (reset | state_r == IDLE) begin
+  always_ff @(posedge clock)
+    if (reset | cstate == IDLE) begin
       raddr_a <= a_addr;
       raddr_b <= b_addr;
       waddr_c <= c_addr;
-    end else if (state_r == WRITE_DATA) begin
+    end else if (cstate == WRITE_DATA) begin
       raddr_a <= raddr_a + 'd1;
       raddr_b <= raddr_b + 'd1;
       waddr_c <= waddr_c + 'd1;
     end
-  end
 
   // create request
-  assign mem_req_valid = (state_r == READ_REQ) | (state_r == WRITE_REQ);
-  assign mem_req_opcode = state_r == WRITE_REQ;
+  assign mem_req_valid = (cstate == READ_REQ) | (cstate == WRITE_REQ);
+  assign mem_req_opcode = cstate == WRITE_REQ;
   assign mem_req_len = 'd0; // one-word-per-request
-  assign mem_req_addr = (state_r == READ_REQ & ~rd_done)? {32'd0, raddr_a}
-                      : (state_r == READ_REQ & rd_done)? {32'd0, raddr_b}
+  assign mem_req_addr = (cstate == READ_REQ & ~rd_done)? {32'd0, raddr_a}
+                      : (cstate == READ_REQ & rd_done)? {32'd0, raddr_b}
                       : {32'd0, waddr_c};
 
   // read
-  assign a_valid = (state_r == READ_DATA) & mem_rd_valid & ~rd_done;
+  assign a_valid = (cstate == READ_DATA) & mem_rd_valid & ~rd_done;
   assign a_data = mem_rd_bits[ADDER_BITS-1:0];
-  assign b_valid = (state_r == READ_DATA) & mem_rd_valid & rd_done;
+  assign b_valid = (cstate == READ_DATA) & mem_rd_valid & rd_done;
   assign b_data = mem_rd_bits[ADDER_BITS-1:0];
-  assign mem_rd_ready = state_r == READ_DATA;
+  assign mem_rd_ready = cstate == READ_DATA;
 
   // write
-  assign mem_wr_valid = state_r == WRITE_DATA;
+  assign mem_wr_valid = cstate == WRITE_DATA;
   assign mem_wr_bits = {{(MEM_DATA_BITS-ADDER_BITS){1'b0}}, c_data};
 
   // count read/write
-  always_ff @(posedge clock) begin
-    if (reset | state_r == IDLE) begin
+  always_ff @(posedge clock)
+    if (reset | cstate == IDLE)
       cnt <= 'd0;
-    end else if (state_r == WRITE_DATA) begin
+    else if (cstate == WRITE_DATA)
       cnt <= cnt + 1'b1;
-    end
-  end
 
   // done when read/write are equal to length
   assign finish = last;
+
 endmodule
