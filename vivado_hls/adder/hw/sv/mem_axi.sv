@@ -89,13 +89,6 @@ module mem_axi #
   output [MEM_AXI_USER_BITS-1:0] m_axi_gmem_BUSER
 );
 
-  // this is a timeout counter needed because the hls generated
-  // code has a buggy implementation of the protocol. For example,
-  // after reset the adder generates a write request but never
-  // generates valid data over the bus.
-  localparam TIMEOUT = 1024;
-  logic [32-1:0] timeout_cnt;
-
   logic [MEM_LEN_BITS-1:0] len;
 
   typedef enum logic [2:0] {IDLE,
@@ -103,49 +96,38 @@ module mem_axi #
                             WRITE_DATA,
                             WRITE_ACK} state_t;
 
-  state_t state_n, state_r;
+  state_t nstate, cstate;
 
   always_ff @(posedge clock)
     if (reset)
-      state_r <= IDLE;
+      cstate <= IDLE;
     else
-      state_r <= state_n;
+      cstate <= nstate;
 
   always_comb begin
-    state_n = IDLE;
-    case (state_r)
+    nstate = cstate;
+    case (cstate)
 
       IDLE: begin
-        // $display("IDLE");
         if (m_axi_gmem_ARVALID)
-          state_n = READ_DATA;
+          nstate = READ_DATA;
         else if (m_axi_gmem_AWVALID)
-          state_n = WRITE_DATA;
-        else
-          state_n = IDLE;
+          nstate = WRITE_DATA;
       end
 
       READ_DATA: begin
         if (m_axi_gmem_RREADY & mem_rd_valid & len == 'd0)
-          state_n = IDLE;
-        else
-          state_n = READ_DATA;
+          nstate = IDLE;
       end
 
       WRITE_DATA: begin
         if (m_axi_gmem_WVALID & m_axi_gmem_WLAST)
-          state_n = WRITE_ACK;
-        else if (timeout_cnt == TIMEOUT)
-          state_n = IDLE;
-        else
-          state_n = WRITE_DATA;
+          nstate = WRITE_ACK;
       end
 
       WRITE_ACK: begin
         if (m_axi_gmem_BREADY)
-          state_n = IDLE;
-        else
-          state_n = WRITE_ACK;
+          nstate = IDLE;
       end
 
       default: begin
@@ -154,47 +136,41 @@ module mem_axi #
   end
 
   always_ff @(posedge clock)
-    if (state_r == IDLE)
-      timeout_cnt <= 'd0;
-    else if (state_r == WRITE_DATA & ~m_axi_gmem_WVALID)
-      timeout_cnt <= timeout_cnt + 1'b1;
-
-  always_ff @(posedge clock)
     if (reset)
       len <= 'd0;
-    else if ((state_r == IDLE) & m_axi_gmem_ARVALID)
+    else if ((cstate == IDLE) & m_axi_gmem_ARVALID)
       len <= m_axi_gmem_ARLEN;
-    else if  ((state_r == IDLE) & m_axi_gmem_AWVALID)
+    else if  ((cstate == IDLE) & m_axi_gmem_AWVALID)
       len <= m_axi_gmem_AWLEN;
-    else if ((state_r == READ_DATA)
+    else if ((cstate == READ_DATA)
             & m_axi_gmem_RREADY
             & mem_rd_valid
             & len != 'd0)
       len <= len - 'd1;
 
-  assign mem_req_valid = ((state_r == IDLE) & m_axi_gmem_ARVALID)
-                       | ((state_r == IDLE) & m_axi_gmem_AWVALID);
+  assign mem_req_valid = ((cstate == IDLE) & m_axi_gmem_ARVALID)
+                       | ((cstate == IDLE) & m_axi_gmem_AWVALID);
 
   assign mem_req_opcode = ~m_axi_gmem_ARVALID;
   assign mem_req_len = m_axi_gmem_ARVALID? m_axi_gmem_ARLEN : m_axi_gmem_AWLEN;
   assign mem_req_addr = m_axi_gmem_ARVALID? m_axi_gmem_ARADDR : m_axi_gmem_AWADDR;
 
-  assign m_axi_gmem_ARREADY = state_r == IDLE;
-  assign m_axi_gmem_AWREADY = state_r == IDLE;
+  assign m_axi_gmem_ARREADY = cstate == IDLE;
+  assign m_axi_gmem_AWREADY = cstate == IDLE;
 
-  assign m_axi_gmem_RVALID = (state_r == READ_DATA) & mem_rd_valid;
+  assign m_axi_gmem_RVALID = (cstate == READ_DATA) & mem_rd_valid;
   assign m_axi_gmem_RDATA = mem_rd_bits;
   assign m_axi_gmem_RLAST = len == 'd0;
   assign m_axi_gmem_RRESP = 'd0;
   assign m_axi_gmem_RUSER = 'd0;
   assign m_axi_gmem_RID = 'd0;
 
-  assign mem_rd_ready = (state_r == READ_DATA) & m_axi_gmem_RREADY;
-  assign mem_wr_valid = (state_r == WRITE_DATA) & m_axi_gmem_WVALID;
+  assign mem_rd_ready = (cstate == READ_DATA) & m_axi_gmem_RREADY;
+  assign mem_wr_valid = (cstate == WRITE_DATA) & m_axi_gmem_WVALID;
   assign mem_wr_bits = m_axi_gmem_WDATA;
-  assign m_axi_gmem_WREADY = state_r == WRITE_DATA;
+  assign m_axi_gmem_WREADY = cstate == WRITE_DATA;
 
-  assign m_axi_gmem_BVALID = state_r == WRITE_ACK;
+  assign m_axi_gmem_BVALID = cstate == WRITE_ACK;
   assign m_axi_gmem_BRESP = 'd0;
   assign m_axi_gmem_BUSER = 'd0;
   assign m_axi_gmem_BID = 'd0;

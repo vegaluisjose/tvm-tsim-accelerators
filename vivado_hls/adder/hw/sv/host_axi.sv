@@ -63,59 +63,49 @@ module host_axi #
                             WRITE_DATA,
                             WRITE_ACK} state_t;
 
-  state_t state_n, state_r;
+  state_t nstate, cstate;
 
   always_ff @(posedge clock)
     if (reset)
-      state_r <= IDLE;
+      cstate <= IDLE;
     else
-      state_r <= state_n;
+      cstate <= nstate;
 
   always_comb begin
-    state_n = IDLE;
-    case (state_r)
+    nstate = cstate;
+    case (cstate)
 
       IDLE: begin
         if (host_req_valid)
           if (host_req_opcode)
-            state_n = WRITE_REQ;
+            nstate = WRITE_REQ;
           else
-            state_n = READ_REQ;
+            nstate = READ_REQ;
       end
 
       READ_REQ: begin
         if (s_axi_control_ARREADY)
-          state_n = READ_DATA;
-        else
-          state_n = READ_REQ;
+          nstate = READ_DATA;
       end
 
       READ_DATA: begin
         if (s_axi_control_RVALID)
-          state_n = IDLE;
-        else
-          state_n = READ_DATA;
+          nstate = IDLE;
       end
 
       WRITE_REQ: begin
         if (s_axi_control_AWREADY)
-          state_n = WRITE_DATA;
-        else
-          state_n = WRITE_REQ;
+          nstate = WRITE_DATA;
       end
 
       WRITE_DATA: begin
         if (s_axi_control_WREADY)
-          state_n = WRITE_ACK;
-        else
-          state_n = WRITE_DATA;
+          nstate = WRITE_ACK;
       end
 
       WRITE_ACK: begin
         if (s_axi_control_BVALID)
-          state_n = IDLE;
-        else
-          state_n = WRITE_ACK;
+          nstate = IDLE;
       end
 
       default: begin
@@ -126,28 +116,27 @@ module host_axi #
   logic [HOST_ADDR_BITS-1:0] addr;
   logic [HOST_DATA_BITS-1:0] data;
 
-  always_ff @(posedge clock) begin
+  always_ff @(posedge clock)
     if (reset) begin
       addr <= 'd0;
       data <= 'd0;
-    end else if (state_r == IDLE && host_req_valid) begin
+    end else if (cstate == IDLE && host_req_valid) begin
       addr <= host_req_addr;
       data <= host_req_value;
     end
-  end
 
-  assign s_axi_control_AWVALID = state_r == WRITE_REQ;
+  assign s_axi_control_AWVALID = cstate == WRITE_REQ;
   assign s_axi_control_AWADDR = addr[HOST_AXI_ADDR_BITS-1:0];
-  assign s_axi_control_WVALID = state_r == WRITE_DATA;
+  assign s_axi_control_WVALID = cstate == WRITE_DATA;
   assign s_axi_control_WDATA = data;
   assign s_axi_control_WSTRB = 'hf;
-  assign s_axi_control_BREADY = state_r == WRITE_ACK;
-  assign s_axi_control_ARVALID = state_r == READ_REQ;
+  assign s_axi_control_BREADY = cstate == WRITE_ACK;
+  assign s_axi_control_ARVALID = cstate == READ_REQ;
   assign s_axi_control_ARADDR = addr[HOST_AXI_ADDR_BITS-1:0];
-  assign s_axi_control_RREADY = state_r == READ_DATA;
+  assign s_axi_control_RREADY = cstate == READ_DATA;
 
-  assign host_req_deq = (state_r == READ_REQ & s_axi_control_ARREADY)
-                      | (state_r == WRITE_REQ & s_axi_control_AWREADY);
+  assign host_req_deq = (cstate == READ_REQ & s_axi_control_ARREADY)
+                      | (cstate == WRITE_REQ & s_axi_control_AWREADY);
   assign host_resp_valid = s_axi_control_RVALID;
   assign host_resp_bits = s_axi_control_RDATA;
 
@@ -163,7 +152,7 @@ module host_axi #
       if (s_axi_control_ARVALID & s_axi_control_ARREADY)
         $display("[host] raddr:%x", s_axi_control_ARADDR);
 
-      if (state_r == IDLE & host_req_valid)
+      if (cstate == IDLE & host_req_valid)
         $display("[host] opcode:%b addr:%x", host_req_opcode, host_req_addr);
     end
   end
