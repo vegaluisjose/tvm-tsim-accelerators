@@ -15,14 +15,21 @@
 <!--- specific language governing permissions and limitations -->
 <!--- under the License. -->
 
-TSIM Installation
-=================
+TSIM
+====
 
-*TSIM* is a cycle-accurate hardware simulation environment that can be invoked and managed directly from TVM.
-This simulation environment can be used in both OSX and Linux.
-There are two dependencies required to make *TSIM* works: [Verilator](https://www.veripool.org/wiki/verilator) and [sbt](https://www.scala-sbt.org/) for accelerators designed in [Chisel3](https://github.com/freechipsproject/chisel3).
+TSIM is a cycle-accurate hardware simulation environment that can be invoked and managed directly from TVM.
+This simulation environment can be used in both OSX and Linux. 
 
-## OSX Dependencies
+TSIM depends on [Verilator](https://www.veripool.org/wiki/verilator) to work (version 4.00 and above).
+
+There are three accelerators designed in three languages:
+
+* Verilog
+* Chisel3 requires [sbt](https://www.scala-sbt.org/) for accelerators designed in [Chisel3](https://github.com/freechipsproject/chisel3)
+* Xilinx Vivado HLS requires [vivado](https://docs.tvm.ai/vta/install.html#vta-fpga-toolchain-installation)
+
+## OSX
 
 Install `sbt` and `verilator` using [Homebrew](https://brew.sh/).
 
@@ -30,7 +37,7 @@ Install `sbt` and `verilator` using [Homebrew](https://brew.sh/).
 brew install verilator sbt
 ```
 
-## Linux Dependencies
+## Linux
 
 Add `sbt` to package manager (Ubuntu).
 
@@ -44,23 +51,14 @@ Install `sbt` and `verilator`.
 
 ```bash
 sudo apt install verilator sbt
-```
-
-Verilator version check
-
-```bash
-verilator --version
-```
-
-the supported version of Verilator should be at least 4.012, 
-if homebrew (OSX) or package-manager (Linux) does not support that version,
-please install Verilator 4.012 or later from binary or source base on following
-instruction of Verilator wiki.  
-
-https://www.veripool.org/projects/verilator/wiki/Installing
+``` 
 
 ## Setup in TVM
 
-1. Install `verilator` and `sbt` as described above
+1. Install all dependencies as described above
 2. Get tvm submodule `git submodule update --init --recursive`
 3. Build [tvm](https://docs.tvm.ai/install/from_source.html#build-the-shared-library)
+4. Run examples, for example
+    * Verilog accelerator `cd verilog/adder && make`
+    * Chisel3 accelerator `cd chisel/adder && make`
+    * HLS accelerator `cd vivado_hls/adder && make`

@@ -28,3 +28,6 @@ hls: $(build_dir)
 
 $(build_dir):
 	mkdir -p $@
+
+clean:
+	-rm -rf $(build_dir)

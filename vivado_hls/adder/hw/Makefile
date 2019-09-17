@@ -78,7 +78,12 @@ cxx_files += $(VERILATOR_INC_DIR)/verilated_dpi.cpp
 cxx_files += $(wildcard $(build_dir)/*.cpp)
 cxx_files += $(vta_dir)/hardware/dpi/tsim_device.cc
 
-v_files = $(wildcard $(abspath .)/v/*.v $(vta_dir)/hardware/chisel/src/main/resources/verilog/*.v)
+v_files = $(wildcard $(abspath .)/v/*.v)
+v_files += $(wildcard $(vta_dir)/hardware/chisel/src/main/resources/verilog/*.v)
+v_files += $(abspath .)/vivado/build/vadd/soln/impl/verilog/vadd_control_s_axi.v
+v_files += $(abspath .)/vivado/build/vadd/soln/impl/verilog/vadd_gmem_m_axi.v
+v_files += $(abspath .)/vivado/build/vadd/soln/impl/verilog/vadd.v
+v_files += $(abspath .)/vivado/build/vadd/soln/impl/verilog/vadd_v1_buffer.v
 
 ifneq ($(USE_TRACE), 0)
   verilator_opt += --trace
@@ -96,7 +101,11 @@ else
   lib_path = $(build_dir)/$(LIBNAME).so
 endif
 
-default: lib
+default: hls lib
+
+hls: $(abspath .)/vivado/build/vadd/soln/impl/verilog/vadd.v
+$(abspath .)/vivado/build/vadd/soln/impl/verilog/vadd.v:
+	make -C vivado
 
 lib: $(lib_path)
 $(lib_path): $(build_dir)/V$(TOP).cpp
@@ -111,3 +120,4 @@ $(build_dir):
 
 clean:
 	-rm -rf $(build_dir)
+	make -C vivado clean

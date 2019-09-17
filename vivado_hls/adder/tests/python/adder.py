@@ -22,23 +22,18 @@ import tsim
 def test_accel():
     rmax = 64
     dtype = "uint64"
-    # n = np.random.randint(1, rmax)
-    n = 8
+    n = 1 << np.random.randint(0, 5)
     ctx = tvm.cpu(0)
     a = tvm.nd.array(np.random.randint(rmax, size=n).astype(dtype), ctx)
     b = tvm.nd.array(np.random.randint(rmax, size=n).astype(dtype), ctx)
     c = tvm.nd.array(np.zeros(n).astype(dtype), ctx)
     f = tsim.load_module()
     f(a, b, c)
-    print(a.asnumpy())
-    print(b.asnumpy())
-    print(c.asnumpy())
-    # msg = "cycles:{0:4} n:{1:2}".format(cycles, n, c)
-    # np.testing.assert_equal(c.asnumpy(), a.asnumpy() + b.asnumpy(), err_msg = "[FAIL] " + msg)
-    # print("[PASS] " + msg)
+    msg = "n:{}".format(n)
+    np.testing.assert_equal(c.asnumpy(), a.asnumpy() + b.asnumpy(), err_msg = "[FAIL] " + msg)
+    print("[PASS] " + msg)
 
 if __name__ == "__main__":
-    np.random.seed(0)
     tsim.init()
-    for i in range(1):
+    for i in range(8):
         test_accel()
