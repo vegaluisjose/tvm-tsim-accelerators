@@ -25,30 +25,26 @@
   input                         clock,
   input                         reset,
   input                         a_valid,
-  input     [ADDER_BITS-1:0] a_data,
+  input        [ADDER_BITS-1:0] a_data,
   input                         b_valid,
-  input     [ADDER_BITS-1:0] b_data,
-  output    [ADDER_BITS-1:0] c_data
+  input        [ADDER_BITS-1:0] b_data,
+  output       [ADDER_BITS-1:0] c_data
 );
 
   logic [ADDER_BITS-1:0] a_reg;
   logic [ADDER_BITS-1:0] b_reg;
 
-  always_ff @(posedge clock) begin
-    if (reset) begin
+  always_ff @(posedge clock)
+    if (reset)
       a_reg <= 'd0;
-    end else if (a_valid) begin
+    else if (a_valid)
       a_reg <= a_data;
-    end
-  end
 
-  always_ff @(posedge clock) begin
-    if (reset) begin
+  always_ff @(posedge clock)
+    if (reset)
       b_reg <= 'd0;
-    end else if (b_valid) begin
+    else if (b_valid)
       b_reg <= b_data;
-    end
-  end
 
   assign c_data = a_reg + b_reg;
 
